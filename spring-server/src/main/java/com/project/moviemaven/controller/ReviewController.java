@@ -16,7 +16,7 @@ import com.project.moviemaven.model.Review;
 import com.project.moviemaven.service.ReviewService;
 
 @RestController
-@RequestMapping("review")
+@RequestMapping("/api/review")
 @CrossOrigin("*")
 public class ReviewController {
     private final ReviewService reviewService;

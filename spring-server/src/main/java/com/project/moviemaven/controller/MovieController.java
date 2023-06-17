@@ -15,12 +15,15 @@ import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.service.MovieService;
 
 @RestController
-@RequestMapping("movie")
+@RequestMapping("/api/movie")
 @CrossOrigin("*")
 public class MovieController {
 
-    @Autowired
-    private MovieService movieService;
+    private final MovieService movieService;
+
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
+    }
 
     @GetMapping
     public List<Movie> getMovies() {
@@ -28,7 +31,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Movie> getMovie(@PathVariable ObjectId id) {
+    public Movie getMovieById(@PathVariable ObjectId id) {
         return movieService.getMovie(id);
     }
 
