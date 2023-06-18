@@ -1,4 +1,4 @@
-package com.project.moviemaven.config;
+package com.project.moviemaven.exception;
 
 public class NotFoundException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.project.moviemaven.config;
+package com.project.moviemaven.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
