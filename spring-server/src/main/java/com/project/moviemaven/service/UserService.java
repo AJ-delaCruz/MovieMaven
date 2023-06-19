@@ -1,60 +1,30 @@
 package com.project.moviemaven.service;
 
-import java.util.ArrayList;
-
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.project.moviemaven.config.BadRequestException;
-import com.project.moviemaven.config.NotFoundException;
+import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
-public class UserService {
+@RequiredArgsConstructor
+public class UserService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // sign up
-    public User signup(User user) {
-        if (user.getUsername() == null || user.getUsername().isEmpty() || user.getPassword() == null
-                || user.getPassword().isEmpty()) {
-            throw new BadRequestException("Username or password cannot be null or empty");
-        }
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new BadRequestException("Username already taken");
-        }
-        // Hash password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        // store to db
-        return userRepository.save(user);
-    }
-
-    // login
-    public String login(String username, String password) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new BadRequestException("Invalid username or password"));
-        System.out.println(user);
-        System.out.println(password);
-        // Check if the encoded password matches
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadRequestException("Invalid username or password");
-        }
-
-        // Generate a JWT
-        // TODO
-
-        // return jwt token
-        return "token";
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     // retrieve user by ID
