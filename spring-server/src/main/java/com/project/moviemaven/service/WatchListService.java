@@ -7,8 +7,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.project.moviemaven.config.BadRequestException;
-import com.project.moviemaven.config.NotFoundException;
+import com.project.moviemaven.exception.BadRequestException;
+import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.repository.UserRepository;
