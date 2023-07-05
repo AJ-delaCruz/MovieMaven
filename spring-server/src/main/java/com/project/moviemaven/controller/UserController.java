@@ -1,6 +1,5 @@
 package com.project.moviemaven.controller;
 
-import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,19 +25,19 @@ public class UserController {
 
     // retrieve user by ID
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable ObjectId userId) {
+    public User getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 
     // update user
     @PutMapping("/{userId}")
-    public User updateUser(@PathVariable ObjectId userId, @RequestBody User user) {
+    public User updateUser(@PathVariable Long userId, @RequestBody User user) {
         return userService.updateUser(userId, user);
     }
 
     // delete user by ID
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable ObjectId userId) {
+    public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
     }
 

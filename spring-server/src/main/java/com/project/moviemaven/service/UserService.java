@@ -1,6 +1,5 @@
 package com.project.moviemaven.service;
 
-import org.bson.types.ObjectId;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,20 +27,21 @@ public class UserService implements UserDetailsService {
     }
 
     // retrieve user by ID
-    public User getUserById(ObjectId userId) {
+    public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     // update user
-    public User updateUser(ObjectId userId, User updatedUser) {
+    public User updateUser(Long userId, User updatedUser) {
         User user = getUserById(userId);
 
         if (updatedUser.getUsername() != null) {
             user.setUsername(updatedUser.getUsername());
         }
 
-        if (updatedUser.getPassword() != null || !updatedUser.getPassword().isEmpty()) {
+        if (updatedUser.getPassword() != null) {
+            // || !updatedUser.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
         }
 
@@ -49,7 +49,7 @@ public class UserService implements UserDetailsService {
     }
 
     // delete user by ID
-    public void deleteUser(ObjectId userId) {
+    public void deleteUser(Long userId) {
         User user = getUserById(userId);
         userRepository.delete(user);
     }
