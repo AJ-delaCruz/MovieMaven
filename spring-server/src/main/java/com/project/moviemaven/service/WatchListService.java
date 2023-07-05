@@ -3,8 +3,6 @@ package com.project.moviemaven.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.moviemaven.exception.BadRequestException;
@@ -13,20 +11,18 @@ import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class WatchListService {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private MovieService movieService;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final MovieService movieService;
 
     // add movie to user's watch list
-    public User addToWatchList(ObjectId userId, ObjectId movieId) {
+    public User addToWatchList(Long userId, Long movieId) {
         Movie movie = movieService.getMovie(movieId);
 
         // add the movie
@@ -41,17 +37,17 @@ public class WatchListService {
     }
 
     // retrieve user's watchlist
-    public List<Movie> getWatchList(ObjectId userId) {
+    public List<Movie> getWatchList(Long userId) {
         User user = userService.getUserById(userId); // find user
         List<Movie> movies = new ArrayList<>();
-        for (ObjectId movieId : user.getWatchList()) { // for every movie Id, return the movie
+        for (Long movieId : user.getWatchList()) { // for every movie Id, return the movie
             movies.add(movieService.getMovie(movieId));
         }
         return movies;
     }
 
     // remove movie from user's watch list
-    public User removeFromWatchList(ObjectId userId, ObjectId movieId) {
+    public User removeFromWatchList(Long userId, Long movieId) {
         User user = userService.getUserById(userId);
 
         if (!user.getWatchList().remove(movieId)) {
@@ -60,5 +56,4 @@ public class WatchListService {
 
         return userRepository.save(user);
     }
-
 }

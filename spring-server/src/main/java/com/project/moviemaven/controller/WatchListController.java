@@ -2,7 +2,6 @@ package com.project.moviemaven.controller;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,19 +27,19 @@ public class WatchListController {
 
     // add movie to watchlist
     @PostMapping("/{movieId}")
-    public User addToWatchList(@PathVariable ObjectId userId, @PathVariable ObjectId movieId) {
+    public User addToWatchList(@PathVariable Long userId, @PathVariable Long movieId) {
         return watchListService.addToWatchList(userId, movieId);
     }
 
     // retrieve user's watchlist
     @GetMapping
-    public List<Movie> getWatchlist(@PathVariable ObjectId userId) {
+    public List<Movie> getWatchlist(@PathVariable Long userId) {
         return watchListService.getWatchList(userId);
     }
 
     // remove movie from user's watchlist
     @DeleteMapping("/{movieId}")
-    public User removeFromWatchList(@PathVariable ObjectId userId, @PathVariable ObjectId movieId) {
+    public User removeFromWatchList(@PathVariable Long userId, @PathVariable Long movieId) {
         return watchListService.removeFromWatchList(userId, movieId);
     }
 
