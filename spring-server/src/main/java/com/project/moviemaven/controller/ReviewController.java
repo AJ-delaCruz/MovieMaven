@@ -2,7 +2,6 @@ package com.project.moviemaven.controller;
 
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +30,12 @@ public class ReviewController {
     }
 
     @GetMapping("/movie/{movieId}")
-    public List<Review> getReviews(@PathVariable ObjectId movieId) {
+    public List<Review> getReviews(@PathVariable Long movieId) {
         return reviewService.getReviews(movieId);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteReview(@PathVariable ObjectId id) {
+    public void deleteReview(@PathVariable Long id) {
         reviewService.deleteReview(id);
     }
 
