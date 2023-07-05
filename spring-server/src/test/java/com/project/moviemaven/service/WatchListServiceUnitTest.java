@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,18 +35,18 @@ public class WatchListServiceUnitTest {
 
     @Test
     public void testAddWatchList() {
-        //TODO
+        // TODO
     }
 
     @Test
     public void testGetWatchList() {
-        ObjectId userId = new ObjectId();
-        ObjectId movieId = new ObjectId();
-        ObjectId movieId2 = new ObjectId();
+        Long userId = 1L;
+        Long movieId = 2L;
+        Long movieId2 = 3L;
 
         Movie movie1 = new Movie(movieId, "superman", null, null);
         Movie movie2 = new Movie(movieId2, "batman", null, null);
-        ArrayList<ObjectId> watchList = new ArrayList<>();
+        ArrayList<Long> watchList = new ArrayList<>();
         watchList.add(movieId);
         watchList.add(movieId2);
         User user = new User(userId, null, null, watchList, null);
