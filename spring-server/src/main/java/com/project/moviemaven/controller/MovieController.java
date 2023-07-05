@@ -1,10 +1,7 @@
 package com.project.moviemaven.controller;
 
 import java.util.List;
-import java.util.Optional;
 
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +28,7 @@ public class MovieController {
     }
 
     @GetMapping("/{id}")
-    public Movie getMovieById(@PathVariable ObjectId id) {
+    public Movie getMovieById(@PathVariable Long id) {
         return movieService.getMovie(id);
     }
-
 }
