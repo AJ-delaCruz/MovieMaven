@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+
+  backend:
+    build:
+      context: ./spring-server
+      dockerfile: Dockerfile
+    env_file:
+      - ./spring-server/src/main/resources/.env
+    ports:
+      - 3000:3000
+    depends_on:
+      - database
+
+  database:
+    image: postgres
+    restart: always
+    env_file:
+      - ./spring-server/src/main/resources/.env
+    volumes:
+      - ./data:/var/lib/postgresql/data
