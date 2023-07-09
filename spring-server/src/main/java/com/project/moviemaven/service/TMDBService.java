@@ -1,14 +1,17 @@
-package com.project.moviemaven.service;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 
+import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbMovies.MovieMethod;
+import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -17,36 +20,52 @@ public class TMDBService {
 
     @Value("${TMDB_API_KEY}")
     private String TMDB_API_KEY;
-    private static final String TMDB_API_URL = "https://api.themoviedb.org/3";
+    private TmdbApi tmdbApi;
 
-    private final RestTemplate restTemplate;
+    @PostConstruct
+    public void initialize() {
+        // initialize tmdbApi object using API key
+        tmdbApi = new TmdbApi(TMDB_API_KEY);
+    }
 
     // retrieve movie from TMDB
     public Movie getMovie(Long id) {
-        final String uri = TMDB_API_URL + "/movie/" + id + "?TMDB_API_KEY=" + TMDB_API_KEY;
-        Movie movie = restTemplate.getForObject(uri, Movie.class);
-        if (movie == null) {
+        // use tmdbApi to fetch movie details from TMDB
+        MovieDb movieDb = tmdbApi.getMovies().getMovie(id.intValue(), "en", MovieMethod.values());
+        if (movieDb == null) {
             throw new NotFoundException("Movie not found");
         }
+        // convert to Movie object
+        return covertTMDBMovieToMovie(movieDb);
+    }
+
+    // covert from MovieDb object to own Movie object
+    private Movie covertTMDBMovieToMovie(MovieDb movieDb) {
+        Movie movie = new Movie();
+        movie.setMovieId((long) movieDb.getId());
+        movie.setTitle(movieDb.getTitle());
+        movie.setReleaseDate(movieDb.getReleaseDate());
+
+        // return Movie object
         return movie;
     }
 
     // retrieve current movies playing from TMDB
-    public Movie[] getMovies() {
-        final String uri = TMDB_API_URL + "/movie/now_playing?TMDB_API_KEY=" + TMDB_API_KEY;
-        return restTemplate.getForObject(uri, Movie[].class);
+    public List<Movie> getMovies() {
+        // Use tmdbApi to fetch currently playing movies
+        MovieResultsPage results = tmdbApi.getMovies().getNowPlayingMovies("en", 1, "us");
+        return results.getResults().stream() // covert List of MovieDb objects to Stream
+                .map(this::covertTMDBMovieToMovie) // convert MovieDb to Movie object
+                .collect(Collectors.toList()); // covert Stream back to List of Movie object
     }
 
     // search for movie from TMDB
-    public Movie[] searchMovie(String query) {
-        final String uri = TMDB_API_URL + "/search/movie?TMDB_API_KEY=" + TMDB_API_KEY + "&query=" + query;
-        return restTemplate.getForObject(uri, Movie[].class);
-    }
-
-    // retrieve movies from TMDB
-    public String searchMovies(String query) {
-        String url = TMDB_API_URL + "/search/movie?TMDB_API_KEY=" + TMDB_API_KEY + "&query=" + query;
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
-        return responseEntity.getBody();
+    public List<Movie> searchMovie(String query) {
+        // Use tmdbApi to search for movies matching the query
+        MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, 1);
+        // conver each MovieDb object to Movie object
+        return results.getResults().stream()
+                .map(this::covertTMDBMovieToMovie)
+                .collect(Collectors.toList());
     }
 }
