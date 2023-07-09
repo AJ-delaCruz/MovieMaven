@@ -38,7 +38,7 @@ public class WatchListService {
         } else {
             throw new BadRequestException(movie.getTitle() + " already exists in watch list");
         }
-        
+
         userRepository.save(user); // save the changes to the HashSet User
         movieRepository.save(movie); // save the changes to the HashSet Movie
         return user;
@@ -48,21 +48,28 @@ public class WatchListService {
     // retrieve user's watchlist
     public List<Movie> getWatchList(Long userId) {
         User user = userService.getUserById(userId); // find user
-        List<Movie> movies = new ArrayList<>();
-        for (Long movieId : user.getWatchList()) { // for every movie Id, return the movie
-            movies.add(movieService.getMovie(movieId)); // retrieve movies from tmdb
-        }
-        return movies;
+        return new ArrayList<>(user.getWatchList()); // convert return Set<Movie> watchList to List
+
     }
 
     // remove movie from user's watch list
-    public User removeFromWatchList(Long userId, Long movieId) {
-        User user = userService.getUserById(userId);
+    public User removeFromWatchList(Long userId, Long tmdbId) {
+        User user = userService.getUserById(userId); // retrieve user from db
+        Movie movie = movieService.getMovieFromDb(tmdbId); // retrieve movie from db
 
-        if (!user.getWatchList().remove(movieId)) {
-            throw new NotFoundException("Movie not found");
+        // remove Movie object from set else return false
+        if (!user.getWatchList().remove(movie)) {
+            throw new NotFoundException("Movie not found in the watchlist");
         }
 
-        return userRepository.save(user);
+        // Remove the user from the list of users who have the movie in their watchlist
+        if (!movie.getUsers().remove(user)) {
+            throw new NotFoundException("User not found in the movie's user list");
+        }
+
+        // update database
+        userRepository.save(user);
+        movieRepository.save(movie);
+        return user;
     }
 }
