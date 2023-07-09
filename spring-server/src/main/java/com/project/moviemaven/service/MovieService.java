@@ -20,12 +20,15 @@ public class MovieService {
 
     // store movie from TMDB to database
     public Movie addMovie(Long tmdbId) {
-        List<Movie> movie = movieRepository.findByTmdbId(tmdbId);
-        // retrieve movie data from TMDB
-        Movie newMovie = tmdbService.getMovie(tmdbId);
-        return movieRepository.save(newMovie);
+        // check if tmdb movie already exists in database
+        return movieRepository.findByTmdbId(tmdbId)
+                .orElseGet(() -> {
+                    // retrieve movie data from TMDB
+                    Movie newMovie = tmdbService.getMovie(tmdbId);
+                    //store to db
+                    return movieRepository.save(newMovie);
+                });
     }
-
 
     // find movie by TMDB ID
     public Movie getMovieByTmdbId(Long tmdbId) {
