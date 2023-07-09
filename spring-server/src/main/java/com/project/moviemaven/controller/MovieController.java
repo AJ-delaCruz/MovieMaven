@@ -11,24 +11,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.service.MovieService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/movie")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class MovieController {
 
     private final MovieService movieService;
 
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
+    // retrieve movie from db
+    @GetMapping("/{id}")
+    public Movie getMovieById(@PathVariable Long id) {
+        return movieService.getMovieFromDb(id);
     }
 
+    //get all movies from db
     @GetMapping
     public List<Movie> getMovies() {
         return movieService.getMovies();
     }
 
-    @GetMapping("/{id}")
-    public Movie getMovieById(@PathVariable Long id) {
-        return movieService.getMovie(id);
-    }
 }

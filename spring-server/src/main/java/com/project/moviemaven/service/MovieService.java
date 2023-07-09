@@ -1,7 +1,6 @@
 package com.project.moviemaven.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -25,16 +24,17 @@ public class MovieService {
                 .orElseGet(() -> {
                     // retrieve movie data from TMDB
                     Movie newMovie = tmdbService.getMovie(tmdbId);
-                    //store to db
+                    // store to db
                     return movieRepository.save(newMovie);
                 });
     }
 
-    // find movie by TMDB ID
-    public Movie getMovieByTmdbId(Long tmdbId) {
+    // find movie using TMDB movie ID from database
+    public Movie getMovieFromDb(Long tmdbId) {
         return movieRepository.findByTmdbId(tmdbId)
-                .orElseThrow(() -> new NotFoundException("Movie not found in TMDB"));
+                .orElseThrow(() -> new NotFoundException("Movie not found in database"));
     }
+
 
     public List<Movie> getMovies() {
         return movieRepository.findAll();

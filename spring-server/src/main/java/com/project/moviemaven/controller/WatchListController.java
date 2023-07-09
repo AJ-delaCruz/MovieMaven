@@ -14,16 +14,15 @@ import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.service.WatchListService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
-@RequestMapping("/api/user/watchlist/{userId}")
+@RequestMapping("/api/user/{userId}/watchlist")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class WatchListController {
 
     private final WatchListService watchListService;
-
-    public WatchListController(WatchListService watchListService) {
-        this.watchListService = watchListService;
-    }
 
     // add movie to watchlist
     @PostMapping("/{movieId}")
