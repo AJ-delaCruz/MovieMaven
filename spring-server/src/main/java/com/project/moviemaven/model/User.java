@@ -1,8 +1,9 @@
 package com.project.moviemaven.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,13 +11,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,9 +40,14 @@ public class User implements UserDetails {
     private String username;
     @JsonIgnore
     private String password;
-    @ElementCollection
     @Builder.Default
-    private List<Long> watchList = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+        name = "user_watchlist", 
+        joinColumns = @JoinColumn(name = "user_id"), 
+        inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    private Set<Movie> watchList = new HashSet<>();
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER; // Default role
