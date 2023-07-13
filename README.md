@@ -1,5 +1,7 @@
 # MovieMaven
 
+## System Architecture
+<img width="645" alt="System Architecture" src="https://github.com/AJ-delaCruz/MovieMaven/assets/54551895/d3aa61d5-e8a2-4ac4-906a-f114b6a5ae6f">
 
 ## Technologies Used
 
