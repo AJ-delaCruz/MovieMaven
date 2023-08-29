@@ -1,3 +1,5 @@
+package com.project.moviemaven.service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,13 +38,13 @@ public class TMDBService {
             throw new NotFoundException("Movie not found");
         }
         // convert to Movie object
-        return covertTMDBMovieToMovie(movieDb);
+        return convertTMDBMovieToMovie(movieDb);
     }
 
-    // covert from MovieDb object to own Movie object
-    private Movie covertTMDBMovieToMovie(MovieDb movieDb) {
+    // convert from MovieDb object to own Movie object
+    private Movie convertTMDBMovieToMovie(MovieDb movieDb) {
         Movie movie = new Movie();
-        movie.setMovieId((long) movieDb.getId());
+        movie.setId((long) movieDb.getId());
         movie.setTitle(movieDb.getTitle());
         movie.setReleaseDate(movieDb.getReleaseDate());
 
@@ -55,7 +57,7 @@ public class TMDBService {
         // Use tmdbApi to fetch currently playing movies
         MovieResultsPage results = tmdbApi.getMovies().getNowPlayingMovies("en", 1, "us");
         return results.getResults().stream() // covert List of MovieDb objects to Stream
-                .map(this::covertTMDBMovieToMovie) // convert MovieDb to Movie object
+                .map(this::convertTMDBMovieToMovie) // convert MovieDb to Movie object
                 .collect(Collectors.toList()); // covert Stream back to List of Movie object
     }
 
@@ -65,7 +67,7 @@ public class TMDBService {
         MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, 1);
         // conver each MovieDb object to Movie object
         return results.getResults().stream()
-                .map(this::covertTMDBMovieToMovie)
+                .map(this::convertTMDBMovieToMovie)
                 .collect(Collectors.toList());
     }
 }

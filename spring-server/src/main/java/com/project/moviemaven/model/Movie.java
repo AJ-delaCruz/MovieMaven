@@ -25,7 +25,7 @@ public class Movie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private Long movieId; // TMDB movie id
+    private Long tmdbId; // TMDB movie id
     private String title;
     private String releaseDate;
     // private List<Review> reviews;
