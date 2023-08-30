@@ -1,7 +1,6 @@
 package com.project.moviemaven.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +28,7 @@ public class TMDBService {
         tmdbApi = new TmdbApi(TMDB_API_KEY);
     }
 
-    // retrieve movie from TMDB
+    // retrieve movie from TMDB & converts to Movie object
     public Movie getMovie(Long id) {
 
         // use tmdbApi to fetch movie details from TMDB
@@ -40,7 +39,6 @@ public class TMDBService {
         if (movieDb == null) {
             throw new NotFoundException("Movie not found");
         }
-        // System.out.println("MOVIE ID " + movieDb);
         // System.out.println("MOVIE ID " + movieDb.getId());
 
         // convert to TMDB Movie to own Movie object
@@ -59,8 +57,15 @@ public class TMDBService {
         return movie;
     }
 
+    // retrieve raw movie details from TMDB
+    public MovieDb getTmdbMovie(Long id) {
+        // use tmdbApi to fetch movie details from TMDB
+        return tmdbApi.getMovies().getMovie(id.intValue(), "en"); // convert long to int
+
+    }
+
     // retrieve current movies playing from TMDB
-    public List<Movie> getMovies() {
+    public List<MovieDb> getMovies() {
         // Use tmdbApi to fetch currently playing movies
         MovieResultsPage results = tmdbApi.getMovies().getNowPlayingMovies("en", 1, "us");
 
@@ -68,23 +73,20 @@ public class TMDBService {
             throw new NotFoundException("No movies found currently playing.");
         }
 
-        return results.getResults().stream() // covert List of MovieDb objects to Stream
-                .map(this::convertTMDBMovieToMovie) // convert MovieDb to Movie object
-                .collect(Collectors.toList()); // convert Stream back to List of Movie object
+        return results.getResults();
+
     }
 
     // search for movie from TMDB
-    public List<Movie> searchMovie(String query) {
+    public List<MovieDb> searchMovie(String query) {
         // Use tmdbApi to search for movies matching the query
         MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, 1);
 
         if (results.getResults().isEmpty()) {
             throw new NotFoundException("No movies found for the search query: " + query);
         }
+        return results.getResults();
 
-        // convert each MovieDb object to Movie object
-        return results.getResults().stream()
-                .map(this::convertTMDBMovieToMovie)
-                .collect(Collectors.toList());
     }
+
 }
