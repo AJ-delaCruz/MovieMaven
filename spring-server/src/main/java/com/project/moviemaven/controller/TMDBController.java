@@ -22,24 +22,25 @@ public class TMDBController {
     private final TMDBService tmdbService;
 
     // get raw movie details from TMDB
-    @GetMapping("/direct/movie/{id}")
+    @GetMapping("/movie/{id}")
     public ResponseEntity<MovieDb> getTmdbMovie(@PathVariable Long id) {
         MovieDb movie = tmdbService.getTmdbMovie(id);
         return ResponseEntity.ok(movie);
     }
 
     // get a list of current movies from TMDB
-    @GetMapping("/movies")
-    public ResponseEntity<List<MovieDb>> getMovies() {
-        List<MovieDb> movies = tmdbService.getMovies();
+    @GetMapping("/movies/playing")
+    public ResponseEntity<List<MovieDb>> getCurrentMovies(@RequestParam(defaultValue = "1") int page) { // /api/tmdb/movies/playing?page=1
+
+        List<MovieDb> movies = tmdbService.getCurrentMovies(page);
         return ResponseEntity.ok(movies);
 
     }
 
     // search for movies in TMDB
     @GetMapping("/search")
-    public ResponseEntity<List<MovieDb>> searchMovies(@RequestParam String query) { // search?query=Barbie
-        List<MovieDb> movies = tmdbService.searchMovie(query);
+    public ResponseEntity<List<MovieDb>> searchMovies(@RequestParam String query, @RequestParam(defaultValue = "1") int page) { // search?query=Barbie&page=1
+        List<MovieDb> movies = tmdbService.searchMovie(query, page);
         return ResponseEntity.ok(movies);
     }
 

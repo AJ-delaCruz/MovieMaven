@@ -65,9 +65,9 @@ public class TMDBService {
     }
 
     // retrieve current movies playing from TMDB
-    public List<MovieDb> getMovies() {
+    public List<MovieDb> getCurrentMovies(int page) {
         // Use tmdbApi to fetch currently playing movies
-        MovieResultsPage results = tmdbApi.getMovies().getNowPlayingMovies("en", 1, "us");
+        MovieResultsPage results = tmdbApi.getMovies().getNowPlayingMovies("en", page, "us");
 
         if (results.getResults().isEmpty()) {
             throw new NotFoundException("No movies found currently playing.");
@@ -78,9 +78,9 @@ public class TMDBService {
     }
 
     // search for movie from TMDB
-    public List<MovieDb> searchMovie(String query) {
+    public List<MovieDb> searchMovie(String query, int page) {
         // Use tmdbApi to search for movies matching the query
-        MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, 1);
+        MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, page);
 
         if (results.getResults().isEmpty()) {
             throw new NotFoundException("No movies found for the search query: " + query);
