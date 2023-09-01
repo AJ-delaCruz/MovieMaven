@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
@@ -29,6 +30,7 @@ public class TMDBService {
     }
 
     // retrieve movie from TMDB & converts to Movie object
+    @Cacheable(value = "movie", key = "#id")
     public Movie getMovie(Long id) {
 
         // use tmdbApi to fetch movie details from TMDB
@@ -58,13 +60,15 @@ public class TMDBService {
     }
 
     // retrieve raw movie details from TMDB
+    @Cacheable(value = "tmdbMovie", key = "#id")
     public MovieDb getTmdbMovie(Long id) {
         // use tmdbApi to fetch movie details from TMDB
         return tmdbApi.getMovies().getMovie(id.intValue(), "en"); // convert long to int
 
     }
 
-    // retrieve current movies playing from TMDB
+    // retrieve the current movies playing in theater
+    @Cacheable(value = "currentMovies", key = "#page")
     public List<MovieDb> getCurrentMovies(int page) {
         // Use tmdbApi to fetch currently playing movies
         MovieResultsPage results = tmdbApi.getMovies().getNowPlayingMovies("en", page, "us");
@@ -78,6 +82,7 @@ public class TMDBService {
     }
 
     // search for movie from TMDB
+    @Cacheable(value = "searchMovie", key = "{#query, #page}")
     public List<MovieDb> searchMovie(String query, int page) {
         // Use tmdbApi to search for movies matching the query
         MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, page);
