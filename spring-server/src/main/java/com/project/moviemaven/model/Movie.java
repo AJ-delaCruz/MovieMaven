@@ -1,9 +1,11 @@
 package com.project.moviemaven.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,7 +31,20 @@ public class Movie {
     private String title;
     private String releaseDate;
     // private List<Review> reviews;
+    @ElementCollection
+    private List<String> genres; //embedded
+    private String overview;
+    private String tagline;
+    @ElementCollection
+    private List<String> spokenLanguages;
+
+    private Float popularity;
+    private Float voteAverage;
+    private Integer voteCount;
+
+    private String posterPath;
+    private String backdropPath;
 
     @ManyToMany(mappedBy = "watchList")
-    private Set<User> users = new HashSet<>();
+    private Set<User> users = new HashSet<>(); //normalized
 }
