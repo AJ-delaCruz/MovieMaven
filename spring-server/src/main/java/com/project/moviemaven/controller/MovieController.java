@@ -2,7 +2,8 @@ package com.project.moviemaven.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,16 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/movie")
-@CrossOrigin("*")
 @RequiredArgsConstructor
 public class MovieController {
 
     private final MovieService movieService;
+
+    // store movie from TMDB to database
+    @GetMapping("/add/{tmdbId}")
+    public Movie addMovie(@PathVariable Long tmdbId) {
+        return movieService.addMovie(tmdbId);
+    }
 
     // retrieve movie from db
     @GetMapping("/{id}")
@@ -27,10 +33,17 @@ public class MovieController {
         return movieService.getMovieFromDb(id);
     }
 
-    //get all movies from db
+    // get all movies from db
     @GetMapping
     public List<Movie> getMovies() {
         return movieService.getMovies();
+    }
+
+    @DeleteMapping("/delete/{tmdbId}")
+    public ResponseEntity<String> deleteMovie(@PathVariable Long tmdbId) {
+        movieService.deleteMovie(tmdbId);
+
+        return ResponseEntity.ok("TMDB ID " + tmdbId + " deleted");
     }
 
 }
