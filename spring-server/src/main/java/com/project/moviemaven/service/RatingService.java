@@ -64,7 +64,7 @@ public class RatingService {
                 .orElseThrow(() -> new NotFoundException("Movie not found in database")));
 
         rating.setRatingValue(ratingValue);
-        rating.setDateRated(LocalDateTime.now());
+        rating.setDate(LocalDateTime.now());
 
         ratingRepository.save(rating);
     }
