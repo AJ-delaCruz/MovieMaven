@@ -1,6 +1,7 @@
 package com.project.moviemaven.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,18 +31,22 @@ public class TMDBService {
     }
 
     // retrieve movie from TMDB & converts to Movie object
-    @Cacheable(value = "movie", key = "#id")
-    public Movie getMovie(Long id) {
+    /**
+     * Fetches movie details from TMDB by its ID, and converts it to a local Movie entity
+     *
+     * @param tmdbId The ID of the movie in TMDB.
+     * @return Converted Movie object.
+     */
+    // @Cacheable(value = "movie", key = "#id")
+    public Movie getMovieAndConvert(Long id) {
 
         // use tmdbApi to fetch movie details from TMDB
         MovieDb movieDb = tmdbApi.getMovies().getMovie(id.intValue(), "en"); // convert long to int
-        // MovieMethod.values()); //fetch movie details from tmdb
         // MovieMethod.reviews, MovieMethod.latest, MovieMethod.images);
 
         if (movieDb == null) {
             throw new NotFoundException("Movie not found");
         }
-        // System.out.println("MOVIE ID " + movieDb.getId());
 
         // convert to TMDB Movie to own Movie object
         return convertTMDBMovieToMovie(movieDb);
@@ -50,12 +55,26 @@ public class TMDBService {
     // helper
     // convert from MovieDb object to own Movie object
     private Movie convertTMDBMovieToMovie(MovieDb movieDb) {
+
         Movie movie = new Movie();
         movie.setTmdbId((long) movieDb.getId()); // movie Id with MovieDb's ID
         movie.setTitle(movieDb.getTitle());
         movie.setReleaseDate(movieDb.getReleaseDate());
+        movie.setGenres(movieDb.getGenres() != null // check if genre is not null
+                ? movieDb.getGenres().stream().map(x -> x.getName()).collect(Collectors.toList())
+                : null);
+        movie.setOverview(movieDb.getOverview());
+        movie.setTagline(movieDb.getTagline());
+        movie.setSpokenLanguages(movieDb.getSpokenLanguages() != null // check if lang is not null
+                ? movieDb.getSpokenLanguages().stream().map(x -> x.getName()).collect(Collectors.toList())
+                : null);
+        movie.setPopularity(movieDb.getPopularity());
+        movie.setVoteAverage(movieDb.getVoteAverage());
+        movie.setVoteCount(movieDb.getVoteCount());
+        movie.setPosterPath(movieDb.getPosterPath());
+        movie.setBackdropPath(movieDb.getBackdropPath());
 
-        // return Movie object
+        // return converted 'Movie' object
         return movie;
     }
 
