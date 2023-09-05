@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.project.moviemaven.exception.NotFoundException;
+import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.Rating;
 import com.project.moviemaven.repository.MovieRepository;
 import com.project.moviemaven.repository.RatingRepository;
@@ -21,6 +22,7 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final UserRepository userRepository;
     private final MovieRepository movieRepository;
+    private final MovieService movieService;
 
     // retrieve movie ratings by user
     public List<Rating> getRatingsByUser(Long userId) {
@@ -49,20 +51,28 @@ public class RatingService {
 
     // add rating
     @Transactional
-    public void addOrUpdateRating(Long userId, Long movieId, Float ratingValue) {
+    public void addOrUpdateRating(Long userId, Long tmdbId, Float ratingValue) {
         if (ratingValue < 1 || ratingValue > 10) {
             throw new IllegalArgumentException("Rating value must be between 1 and 10");
         }
 
-        Rating rating = ratingRepository.findByUserIdAndMovieId(userId, movieId)
+        // Check if movie exists in the 'Movie' postgres table
+        Movie movie = movieRepository.findByTmdbId(tmdbId).orElse(null);
+
+        // if not, add to db
+        if (movie == null) {
+            // retrieve movie from TMDB, convert to 'Movie' object, and store to db
+            movie = movieService.addMovie(tmdbId);
+        }
+
+        // check if it's already rated
+        Rating rating = ratingRepository.findByUserIdAndMovieId(userId, movie.getId()) // local movie id
                 .orElse(new Rating());
 
         rating.setUser(userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found in database")));
 
-        rating.setMovie(movieRepository.findById(movieId)
-                .orElseThrow(() -> new NotFoundException("Movie not found in database")));
-
+        rating.setMovie(movie);
         rating.setRatingValue(ratingValue);
         rating.setDate(LocalDateTime.now());
 
