@@ -1,5 +1,6 @@
 package com.project.moviemaven.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Movie {
+public class Movie implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +35,7 @@ public class Movie {
     private String releaseDate;
     // private List<Review> reviews;
     @ElementCollection
-    private List<String> genres; //embedded
+    private List<String> genres; // embedded
     private String overview;
     private String tagline;
     @ElementCollection
@@ -46,5 +49,5 @@ public class Movie {
     private String backdropPath;
 
     @ManyToMany(mappedBy = "watchList")
-    private Set<User> users = new HashSet<>(); //normalized
+    private Set<User> users = new HashSet<>(); // normalized
 }
