@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { backendUrl } from "../../config";
-import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { backendUrl } from "../../utils/config";
+import { ERROR_MESSAGES } from "../../utils/errorMessage";
+import axios, { AxiosError } from "axios";
 
-const Register = () => {
+const Register: React.FC = () => {
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
 
-    const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    const submitRegister = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
 
-        console.log(username);
         try {
             //registers user
             const res = await axios.post(`${backendUrl}/api/auth/register`, {
@@ -25,24 +27,32 @@ const Register = () => {
                 password: password
             });
 
-            console.log(res.data);
+            // console.log(res.data);
 
             // Navigate to login page after successful register
-            // navigate('/login');
+            navigate('/login');
         } catch (err) {
             console.log(err);
             //set the error message
             // setErrorMessage(err.response.data.message);
+
+            const error = err as AxiosError;
+
+            if (error.response && typeof error.response.data === 'string') {
+                setErrorMessage(error.response.data);
+            }
+            else {
+                setErrorMessage(ERROR_MESSAGES.UNEXPECTED);
+            }
+        } finally {
+            setIsLoading(false); // End the loading state
         }
 
 
     };
 
     return (
-
         <div className='grid-box-register'>
-            <div className='auth-box-register'>
-            </div>
 
             <div className='form-register'>
                 <div className='auth-header'>
@@ -50,7 +60,7 @@ const Register = () => {
                 </div>
 
 
-                <form onSubmit={submitLogin} className='auth-form'>
+                <form onSubmit={submitRegister} className='auth-form'>
                     <TextField
                         id='outlined-basic'
                         name='username'
@@ -74,17 +84,18 @@ const Register = () => {
                     />
 
 
-                    <Button type='submit' variant='contained'>
+                    <Button type='submit' variant='contained' disabled={isLoading}>
                         Sign Up
                     </Button>
+
                     {errorMessage && <p>{errorMessage}</p>}
                 </form>
 
                 <div className='button-container'>
                     <span>Already have an account?</span>
-                    {/* <Link to='/login'> */}
+                    <Link to='/login'>
                         <Button type='submit' variant='contained' color="secondary">Login</Button>
-                    {/* </Link> */}
+                    </Link>
                 </div>
 
             </div>
