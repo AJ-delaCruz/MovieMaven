@@ -12,6 +12,8 @@ import Register from './pages/Register/Register';
 import Navbar from './components/navbar/Navbar';
 import Footer from './components/footer/Footer';
 import MovieDetails from './components/movie/MovieDetails';
+import Profile from './components/profile/Profile';
+import Homepage from './pages/Homepage/Homepage';
 
 const App: React.FC = () => {
 
@@ -25,16 +27,11 @@ const App: React.FC = () => {
 
       <div>
         <Navbar />
-        <div style={{ display: "flex" }}>
-          {/* <LeftBar /> */}
 
-          {/* 1/3 space for leftbar and 2/3 space for outlet */}
-          <div style={{ flex: 6 }}>
-            {/* nested routes inside root route */}
-            <Outlet />
-            <Footer />
-          </div>
-        </div>
+        {/* nested routes inside root route */}
+        <Outlet />
+
+        <Footer />
 
       </div>
 
@@ -45,7 +42,8 @@ const App: React.FC = () => {
   //client-side auth
   const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
-    const currentUser = useAuthContext();
+    const { currentUser } = useAuthContext();
+
     console.log(currentUser);
     if (!currentUser) {
       return <Navigate to="/login" />;
@@ -66,10 +64,18 @@ const App: React.FC = () => {
       ),
       //nested routes
       children: [
+        {
+          path: "/",
+          element: <Homepage />,
+        },
         // {
         //   path: "/movie/:tmdbId",
         //   element: <MovieDetails />,
         // },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
 
       ],
     },
