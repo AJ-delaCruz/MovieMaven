@@ -1,0 +1,64 @@
+.movies-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px 0;
+    scroll-behavior: smooth;
+    // flex-grow: 1; //container to takes up all available horizontal space
+
+    // For Firefox
+    scrollbar-width: none;
+    // For Edge
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+        display: none; // Webkit browsers like Chrome and Safari to hide scrollbar
+    }
+}
+
+.movie-card {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.movie-list-wrapper {
+    display: flex;
+    align-items: center; //Vertically align the contents
+    position: relative; //Relative positioning so absolute children are relative to this
+
+
+    &:hover .scroll-button {
+        opacity: 1; //set scroll button to be visible when hovered
+
+    }
+
+    .scroll-button {
+        opacity: 0; //scroll button invisible
+        transition: opacity 0.3s ease-in-out;
+
+
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%); // mid
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        z-index: 10;
+        margin: 0 16px; //space between the buttons and the movies container
+
+        // Button hover effect
+        &:hover {
+            transform: translateY(-50%) scale(1.9); //makes the button 90% larger when hovered
+        }
+
+        &.left {
+            left: 0;
+        }
+
+        &.right {
+            right: 0;
+        }
+    }
+}
