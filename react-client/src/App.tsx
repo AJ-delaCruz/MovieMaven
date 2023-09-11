@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -14,7 +14,7 @@ import Footer from './components/footer/Footer';
 import MovieDetails from './components/movie/MovieDetails';
 import Profile from './components/profile/Profile';
 import Homepage from './pages/Homepage/Homepage';
-
+import './App.scss';
 const App: React.FC = () => {
 
   // Define the type for children prop
@@ -22,19 +22,31 @@ const App: React.FC = () => {
     children: React.ReactNode;
   }
 
+  // const Layout: React.FC = () => {
+  //   return (
+
+  //     <div>
+  //       <Navbar />
+
+  //       {/* nested routes inside root route */}
+  //       <Outlet />
+
+  //       <Footer />
+
+  //     </div>
+
+  //   );
+  // };
+
   const Layout: React.FC = () => {
     return (
-
-      <div>
+      <div className="layout-container">
         <Navbar />
-
-        {/* nested routes inside root route */}
-        <Outlet />
-
+        <div className="main-content">
+          <Outlet />
+        </div>
         <Footer />
-
       </div>
-
     );
   };
 
@@ -68,10 +80,10 @@ const App: React.FC = () => {
           path: "/",
           element: <Homepage />,
         },
-        // {
-        //   path: "/movie/:tmdbId",
-        //   element: <MovieDetails />,
-        // },
+        {
+          path: "/movie/:tmdbId",
+          element: <MovieDetails />,
+        },
         {
           path: "/profile",
           element: <Profile />,

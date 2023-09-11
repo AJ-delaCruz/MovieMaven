@@ -1,0 +1,11 @@
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; //fills the full height of the screen, so footer will be bottom
+
+}
+
+.main-content {
+  flex: 1 0 auto; //ensure the main content takes up all available space, pushing the footer down 
+  padding: 20px;
+}
