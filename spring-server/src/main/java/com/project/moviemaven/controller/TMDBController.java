@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.service.TMDBService;
 
 import info.movito.themoviedbapi.model.MovieDb;
@@ -22,9 +23,16 @@ public class TMDBController {
     private final TMDBService tmdbService;
 
     // get raw movie details from TMDB
-    @GetMapping("/movie/{id}")
+    @GetMapping("/raw/movie/{id}")
     public ResponseEntity<MovieDb> getTmdbMovie(@PathVariable Long id) {
         MovieDb movie = tmdbService.getTmdbMovie(id);
+        return ResponseEntity.ok(movie);
+    }
+
+    // get movie details from TMDB, converts to Movie object (w. cast/certification)
+    @GetMapping("/movie/{id}")
+    public ResponseEntity<Movie> getMovieAndConvert(@PathVariable Long id) {
+        Movie movie = tmdbService.getMovieAndConvert(id);
         return ResponseEntity.ok(movie);
     }
 
@@ -37,17 +45,20 @@ public class TMDBController {
 
     }
 
+    // get US certification (for testing, used as a service)
+    @GetMapping("/release/{id}")
+    public ResponseEntity<String> getUSCertificationForMovie(@PathVariable long id) {
+        String certifcate = tmdbService.getUSCertificationForMovie(id);
+        return ResponseEntity.ok(certifcate);
+    }
+
     // search for movies in TMDB
     @GetMapping("/search")
-    public ResponseEntity<List<MovieDb>> searchMovies(@RequestParam String query, @RequestParam(defaultValue = "1") int page) { // search?query=Barbie&page=1
+    public ResponseEntity<List<MovieDb>> searchMovies(@RequestParam String query,
+            @RequestParam(defaultValue = "1") int page) { // search?query=Barbie&page=1
         List<MovieDb> movies = tmdbService.searchMovie(query, page);
         return ResponseEntity.ok(movies);
     }
 
-    // // get movie details from TMDB, converts Moviedb object to Movie object
-    // @GetMapping("/movie/{id}")
-    // public ResponseEntity<Movie> getMovie(@PathVariable Long id) {
-    // Movie movie = tmdbService.getMovie(id);
-    // return ResponseEntity.ok(movie);
-    // }
+ 
 }
