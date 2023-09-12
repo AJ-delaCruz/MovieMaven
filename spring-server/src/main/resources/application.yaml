@@ -19,5 +19,8 @@ spring:
       port: ${REDIS_PORT}
   cache: 
     redis:
-      time-to-live: 3600000 #1 hr
+      # time-to-live: 3600000 #1 hr
+      time-to-live: 10000
+  jackson: # convert Java objects to JSON with snake case to be consistent with frontend
+    property-naming-strategy: SNAKE_CASE
 server.port: 3000
