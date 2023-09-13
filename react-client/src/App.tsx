@@ -15,6 +15,7 @@ import MovieDetails from './components/movie/MovieDetails';
 import Profile from './components/profile/Profile';
 import Homepage from './pages/Homepage/Homepage';
 import './App.scss';
+import SearchResult from './pages/Search/SearchResult';
 const App: React.FC = () => {
 
   // Define the type for children prop
@@ -22,21 +23,7 @@ const App: React.FC = () => {
     children: React.ReactNode;
   }
 
-  // const Layout: React.FC = () => {
-  //   return (
 
-  //     <div>
-  //       <Navbar />
-
-  //       {/* nested routes inside root route */}
-  //       <Outlet />
-
-  //       <Footer />
-
-  //     </div>
-
-  //   );
-  // };
 
   const Layout: React.FC = () => {
     return (
@@ -87,6 +74,10 @@ const App: React.FC = () => {
         {
           path: "/profile",
           element: <Profile />,
+        },
+        {
+          path:"/search-results",
+          element: <SearchResult />,
         },
 
       ],

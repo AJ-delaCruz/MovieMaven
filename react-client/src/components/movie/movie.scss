@@ -16,8 +16,11 @@
         z-index: 2; // ensure title appears above other elements on movie card
     }
 
+
+
     &:hover {
         transform: scale(1.1); // Enlarge the movie poster a bit on hover
+        z-index: 3;
     }
 
     .movie-poster {
@@ -38,6 +41,7 @@
         box-sizing: border-box;
         // display: none; // initially hide preview
 
+
         h3 {
             margin-top: 0;
         }
@@ -56,6 +60,14 @@
     // &:hover .movie-preview {
     //     display: block; //show preview when hovered
     // }
+
+    .no-image-placeholder {
+        height: 225px; //16:9 aspect ratio
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e0e0e0;
+    }
 }
 
 
@@ -84,7 +96,7 @@
         border: none;
         padding: 10px 15px;
         cursor: pointer;
-        z-index: 10;
+        z-index: 4;
         margin: 0 16px; //space between the buttons and the movies container
 
         // slider button hover effect
@@ -105,7 +117,7 @@
 .movies-container {
     display: flex; //align .movie-card in flex
     overflow-x: auto; //horizontal scrollingwhen the movies exceed the container's width
-    padding: 20px 0;
+    padding: 20px 0px 20px 30px;
     scroll-behavior: smooth;
     // flex-grow: 1; //container to takes up all available horizontal space
 
@@ -117,4 +129,44 @@
     &::-webkit-scrollbar {
         display: none; // Webkit browsers like Chrome and Safari to hide scrollbar
     }
+}
+
+//movie details
+.movie-details {
+    padding: 20px;
+    background-color: #f4f4f4;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.movie-details img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.movie-details button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.movie-details button:hover {
+    background-color: #0056b3;
+}
+
+
+//movie grid component
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); // auto fill w 350px wide minimum
+
+    gap: 16px; // todo: add space horizontally
+    padding: 20px;
 }
