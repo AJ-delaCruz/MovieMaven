@@ -1,0 +1,53 @@
+.search-container {
+    margin: 10px;
+    // height: 80%;
+    position: relative;
+    display: flex;
+    // align-items: center; // vertically align the items in the center
+
+    .search-input-section {
+        display: flex;
+        position: relative;
+        // height: 55px;
+        width: 400px;
+        align-items: stretch; //stretch to match the height of the input field or button
+        // align-items: center; //input field & button
+
+        // gap: 0.5rem; // space between the TextField and the Button
+
+        .search-button {
+            // height: 55px;
+        }
+
+    }
+
+
+    .search-results {
+        position: absolute;
+        top: 100%; //display results below input field
+        width: 400px; //match the width of .search-input-section 
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid #ccc; //box border
+        border-radius: 4px;
+        z-index: 9999; //overlays other elements
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        .search-result {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #f7f7f7;
+            }
+        }
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 1rem;
+    }
+
+}

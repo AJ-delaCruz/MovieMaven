@@ -11,7 +11,8 @@ import Settings from '@mui/icons-material/Settings';
 import Person from '@mui/icons-material/Person';
 // import { NotificationContext } from '../../contextAPI/NotificationContext'; //TODO
 import { useAuthContext } from '../../contextAPI/AuthContext';
-// import "./navbar.scss";
+import SearchBar from '../search/SearchBar';
+import "./navbar.scss";
 
 type NotificationEvent = {
     message: string;
@@ -67,6 +68,12 @@ const Navbar: React.FC = () => {
                 <Link to="/" style={{ textDecoration: "none" }}>
                     <span className="logo">MovieMaven</span>
                 </Link>
+            </div>
+
+
+            <div className="mid">
+                <SearchBar />
+
             </div>
 
             <div className="right">
