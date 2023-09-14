@@ -4,13 +4,12 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import LanguageIcon from '@mui/icons-material/Language';
 
-// import "./footer.scss";
+import "./footer.scss";
 
 const Footer: React.FC = () => {
     return (
         <div className="footer">
             <div className="container">
-                <hr />
                 <div className="bottom">
                     <div className="left">
                         <h2>MovieMaven</h2>
@@ -23,7 +22,7 @@ const Footer: React.FC = () => {
                             <InstagramIcon aria-label="Instagram" />
                             <YouTubeIcon aria-label="YouTube" />
                         </div>
-                        <div className="link">
+                        <div className="lang">
                             <LanguageIcon />
                             <span>English</span>
                         </div>

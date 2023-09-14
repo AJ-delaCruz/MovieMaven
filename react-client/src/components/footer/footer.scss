@@ -1,0 +1,62 @@
+.footer {
+    padding: 20px 0;
+    background-color: #2e2e2e; // Dark Gray
+    color: #fff; // White text
+    font-family: Arial, sans-serif;
+
+    .container {
+        position: relative;
+        margin: 0 auto; // centering the container
+        width: 90%;
+
+        .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .left {
+                h2 {
+                    font-size: 1.5em;
+                    margin-bottom: 10px;
+                }
+
+                span {
+                    font-size: 0.9em;
+                    color: #ccc; // Light Gray for the copyright
+                }
+            }
+
+            .right {
+                display: flex;
+                align-items: center;
+
+
+                .social {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px; // Spacing between icons
+
+                    svg {
+                        cursor: pointer;
+                        transition: transform 0.2s ease;
+
+                        &:hover {
+                            transform: scale(1.1); // Slight zoom on hover
+                        }
+                    }
+                }
+
+                .lang {
+                    display: flex;
+                    align-items: center;
+                    margin-left: 20px;
+                    color: #ccc; // Light Gray for the language label
+
+                    span {
+                        margin-left: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

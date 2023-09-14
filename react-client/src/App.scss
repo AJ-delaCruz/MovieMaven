@@ -7,5 +7,8 @@
 
 .main-content {
   flex: 1 0 auto; //ensure the main content takes up all available space, pushing the footer down 
-  padding: 20px;
+  // padding: 20px;
+
+  background-color: #181818; // slightly darker than the navbar and footer 
+  color: #e0e0e0; // light text for contrast
 }
