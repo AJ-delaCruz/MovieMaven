@@ -1,0 +1,78 @@
+.movie-details {
+    padding: 40px;
+    color: #e4e4e4; // Light text
+    // color: #fefefe;
+    // color: #cfcfcf;
+    font-family: 'Open Sans', sans-serif;
+
+    // text-transform: uppercase;
+
+    h1 {
+        font-size: 2.2em;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #ffffff; // make titles pop a bit more with white
+        text-transform: uppercase;
+
+    }
+
+    .content {
+        display: flex;
+        align-items: stretch;
+
+        .image-container {
+            flex: 1; //  1/4 space for image container
+            margin-right: 20px;
+
+            img {
+                max-width: 100%;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); // Light shadow for dark theme
+            }
+        }
+
+        .details-container {
+            flex: 3; // 3/4 space for the details container
+
+            .tagline {
+                font-size: 1.2em;
+                font-style: italic;
+                margin-bottom: 15px;
+                color: #e2e2e2; // Lighter grey for taglines
+                text-transform: uppercase;
+
+            }
+
+            .description-label {
+                color: #FFD700; // Golden color
+                text-transform: uppercase;
+            }
+
+
+            .description {
+                margin-top: 5px;
+                margin-bottom: 20px;
+            }
+
+
+
+            .quick-details,
+            .additional-details {
+                p {
+                    border-bottom: 1px solid #444;
+                    padding-bottom: 10px;
+                    text-transform: uppercase; // Transforms text to uppercase
+
+                    strong {
+                        color: #FFD700; // Golden color for labels
+                    }
+
+                    &:last-child {
+                        border-bottom: none;
+                    }
+                }
+            }
+        }
+    }
+
+}

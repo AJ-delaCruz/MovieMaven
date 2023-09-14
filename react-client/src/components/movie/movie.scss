@@ -131,36 +131,6 @@
     }
 }
 
-//movie details
-.movie-details {
-    padding: 20px;
-    background-color: #f4f4f4;
-    max-width: 800px;
-    margin: 0 auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.movie-details img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.movie-details button {
-    padding: 10px 15px;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.movie-details button:hover {
-    background-color: #0056b3;
-}
-
 
 //movie grid component
 .movie-grid {

@@ -4,6 +4,8 @@
     position: relative;
     display: flex;
     // align-items: center; // vertically align the items in the center
+    background-color: white;
+    border-radius: 5px;
 
     .search-input-section {
         display: flex;
@@ -15,8 +17,19 @@
 
         // gap: 0.5rem; // space between the TextField and the Button
 
+
+        //fix textfield & button rounded border that causing a gap next to each other
+        .MuiOutlinedInput-root {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        // Button styles
         .search-button {
+
             // height: 55px;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
 
     }
