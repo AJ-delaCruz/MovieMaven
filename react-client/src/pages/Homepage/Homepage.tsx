@@ -1,44 +1,44 @@
-import axios from "axios"
-import { backendUrl } from "../../utils/config"
-import { useEffect, useState } from "react";
-import { MovieType } from "../../types/movie";
-import MovieList from "../../components/movie/MovieList";
+
+import MovieSection from "../../components/movie/MovieSection";
+import './homepage.scss';
 
 
 const Homepage: React.FC = () => {
 
-    const [movies, setMovies] = useState<MovieType[]>([]);
-    const [page, setPage] = useState<number>(1);
+    const movieGenres = [
+        { genre: "action", categoryName: "Action" },
+        { genre: "comedy", categoryName: "Comedy" },
+        { genre: "romance", categoryName: "Romance Movies" },
+        { genre: "science fiction", categoryName: "Science Fiction" },
+        { genre: "drama", categoryName: "Drama" },
+        { genre: "mystery", categoryName: "Mystery" },
+        { genre: "crime", categoryName: "Crime" },
+        { genre: "horror", categoryName: "Horror" },
 
-    // console.log(movies);
-    useEffect(() => {
 
 
-        const getTrendingMovies = async () => {
-            try {
-                // trending Movies
-                const res = await axios.get(`${backendUrl}/api/tmdb/movies/playing?page=${page}`);
-                console.log(res.data);
 
-                setMovies(res.data);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        getTrendingMovies();
-    }, []);
-
+    ];
 
     return (
-        <div>
-            <h1>Homepage</h1>
-            <div className="movie-list">
-                <MovieList movies={movies} />
+        <div className='home-container'>
 
-            </div>
+            {/* Categories */}
+            <MovieSection category="now_playing" title="Now Playing" />
+            <MovieSection category="popular" title="Popular" />
+            <MovieSection category="top_rated" title="Top Rated" />
+
+
+            {/* Genres */}
+            {movieGenres.map(movie => (
+                <MovieSection
+                    key={movie.genre}
+                    genre={movie.genre}
+                    title={movie.categoryName}
+                />
+            ))}
         </div>
-    )
+    );
 }
 
 export default Homepage
