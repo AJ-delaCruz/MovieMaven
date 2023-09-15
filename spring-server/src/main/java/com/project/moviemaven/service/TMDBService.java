@@ -1,6 +1,8 @@
 package com.project.moviemaven.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -8,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 
+import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.Credits;
+import info.movito.themoviedbapi.model.Discover;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ReleaseInfo;
 import info.movito.themoviedbapi.model.core.MovieResultsPage;
@@ -33,6 +37,29 @@ public class TMDBService {
         // initialize tmdbApi object using API key
         tmdbApi = new TmdbApi(TMDB_API_KEY);
     }
+
+    // tmdb genre id conversion for frontend request simplicity
+    // https://developer.themoviedb.org/reference/genre-movie-list
+    private static final Map<String, Integer> GENRE_MAPPING = Map.ofEntries( // immutable
+            Map.entry("action", 28),
+            Map.entry("adventure", 12),
+            Map.entry("animation", 16),
+            Map.entry("comedy", 35),
+            Map.entry("crime", 80),
+            Map.entry("documentary", 99),
+            Map.entry("drama", 18),
+            Map.entry("family", 10751),
+            Map.entry("fantasy", 14),
+            Map.entry("history", 36),
+            Map.entry("horror", 27),
+            Map.entry("music", 10402),
+            Map.entry("mystery", 9648),
+            Map.entry("romance", 10749),
+            Map.entry("science fiction", 878),
+            Map.entry("tv movie", 10770),
+            Map.entry("thriller", 53),
+            Map.entry("war", 10752),
+            Map.entry("western", 37));
 
     // retrieve movie from TMDB & converts to Movie object
     /**
@@ -151,17 +178,78 @@ public class TMDBService {
 
     }
 
+    @Cacheable(value = "moviesByFilter", key = "{#genre, #category, #page}")
+    public List<MovieDb> getMoviesByFilter(String genre, String category, int page) {
+        MovieResultsPage results;
+
+        if (genre != null) {
+            return getMoviesByGenre(genre, page);
+
+        } else if (category != null) {
+            switch (category.toLowerCase()) {
+                case "popular":
+                    results = tmdbApi.getMovies().getPopularMovies("en", page);
+                    break;
+                case "top_rated":
+                    results = tmdbApi.getMovies().getTopRatedMovies("en", page);
+                    break;
+                case "now_playing":
+                    results = tmdbApi.getMovies().getNowPlayingMovies("en", page, "us");
+                    break;
+                default:
+                    throw new NotFoundException("Invalid category.");
+            }
+        } else {
+            throw new BadRequestException("Either genre or category must be specified.");
+        }
+
+        if (results.getResults().isEmpty()) {
+            throw new NotFoundException("No movies found for the given filter.");
+        }
+
+        return results.getResults();
+    }
+
     // search for movie from TMDB
     @Cacheable(value = "searchMovie", key = "{#query, #page}")
-    public List<MovieDb> searchMovie(String query, int page) {
+    public Map<String, Object> searchMovie(String query, int page) {
         // Use tmdbApi to search for movies matching the query
-        MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", true, page);
+        MovieResultsPage results = tmdbApi.getSearch().searchMovie(query, 0, "en", false, page);
 
         if (results.getResults().isEmpty()) {
             throw new NotFoundException("No movies found for the search query: " + query);
         }
-        return results.getResults();
 
+        // create hashmap to return movies & also the total pages of the search results
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("movies", results.getResults());
+        responseMap.put("totalPages", results.getTotalPages());
+
+        return responseMap;
+
+    }
+
+    // movies by genre (helper)
+    public List<MovieDb> getMoviesByGenre(String genreName, int page) {
+
+        // retrieve genreId from GENRE_MAPPING
+        Integer genreId = GENRE_MAPPING.get(genreName.toLowerCase());
+
+        if (genreId == null) {
+            throw new NotFoundException("Invalid genre name provided.");
+        }
+
+        Discover discover = new Discover()
+                .withGenres(String.valueOf(genreId)) // popularity desc by default
+                .page(page);
+
+        MovieResultsPage results = tmdbApi.getDiscover().getDiscover(discover);
+
+        if (results.getResults().isEmpty()) {
+            throw new NotFoundException("No movies found for the specified genre.");
+        }
+
+        return results.getResults();
     }
 
 }

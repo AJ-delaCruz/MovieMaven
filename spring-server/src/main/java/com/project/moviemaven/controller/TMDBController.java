@@ -1,6 +1,8 @@
 package com.project.moviemaven.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +47,23 @@ public class TMDBController {
 
     }
 
+    @GetMapping("/movies/filter")
+    public ResponseEntity<List<MovieDb>> getMovies(@RequestParam(required = false) String genre,
+            @RequestParam(required = false) String category,
+            @RequestParam(defaultValue = "1") int page) {
+        List<MovieDb> movies = tmdbService.getMoviesByFilter(genre, category, page);
+        return ResponseEntity.ok(movies);
+    }
+
+    @GetMapping("/byGenre")
+    public ResponseEntity<List<MovieDb>> getMoviesByGenre(
+            @RequestParam String genreName,
+            @RequestParam(defaultValue = "1") int page) {
+        List<MovieDb> movies = tmdbService.getMoviesByGenre(genreName, page);
+
+        return ResponseEntity.ok(movies);
+    }
+
     // get US certification (for testing, used as a service)
     @GetMapping("/release/{id}")
     public ResponseEntity<String> getUSCertificationForMovie(@PathVariable long id) {
@@ -54,11 +73,10 @@ public class TMDBController {
 
     // search for movies in TMDB
     @GetMapping("/search")
-    public ResponseEntity<List<MovieDb>> searchMovies(@RequestParam String query,
+    public ResponseEntity<Map<String, Object>> searchMovies(@RequestParam String query,
             @RequestParam(defaultValue = "1") int page) { // search?query=Barbie&page=1
-        List<MovieDb> movies = tmdbService.searchMovie(query, page);
-        return ResponseEntity.ok(movies);
+        Map<String, Object> result = tmdbService.searchMovie(query, page);
+        return ResponseEntity.ok(result);
     }
 
- 
 }
