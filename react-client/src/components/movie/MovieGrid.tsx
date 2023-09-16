@@ -6,7 +6,7 @@ interface MovieGridProps {
     movies: MovieType[];
 }
 
-const MovieList: React.FC<MovieGridProps> = ({ movies }) => {
+const MovieGrid: React.FC<MovieGridProps> = ({ movies }) => {
 
     return (
         <div className="movie-grid">
@@ -15,4 +15,4 @@ const MovieList: React.FC<MovieGridProps> = ({ movies }) => {
     );
 }
 
-export default MovieList;
+export default MovieGrid;

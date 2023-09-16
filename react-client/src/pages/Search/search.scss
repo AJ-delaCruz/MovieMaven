@@ -1,8 +1,38 @@
-.pagination-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
+.search-results-page {
+    margin-right: 40px;
+    padding: 30px 0px 0px 0px;
+
+    h1 {
+        color: #FFD700; // Golden color
+        margin-left: 15px;
+    }
+
+    .pagination-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        // Pagination MUI
+        .MuiPaginationItem-root {
+            color: #B0B0B0; // Light gray
+            color: #FFD700; // Golden color
+
+            &:hover {
+                background-color: rgba(0, 173, 239, 0.2); // transparent cyan for hover effect
+                background-color: rgba(255, 215, 0, 0.2);
+            }
+        }
+
+        .MuiPaginationItem-page.Mui-selected {
+            background-color: #00ADDF; // Cyan
+            // background-color: #FFD700;
+
+            color: black;
+        }
+
+
+    }
 
 }

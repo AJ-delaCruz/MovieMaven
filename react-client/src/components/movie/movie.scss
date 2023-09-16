@@ -4,7 +4,7 @@
     margin-right: 20px;
     transition: transform 0.3s ease; // for enlargement 
     width: 400px; //movie image width, to follow preview
-
+    // height: 229px;
     // overflow: hidden; //To ensure anything beyond the boundaries isn't visible 
 
     .movie-title {
@@ -14,6 +14,12 @@
         color: white;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); // Shadow for readability
         z-index: 2; // ensure title appears above other elements on movie card
+
+    }
+
+
+    &:hover .movie-title {
+        opacity: 0; // hidden when the movie-card is hovered
     }
 
 
@@ -21,18 +27,26 @@
     &:hover {
         transform: scale(1.1); // Enlarge the movie poster a bit on hover
         z-index: 3;
+        //todo: for movies on edges (scale to the left or right, so it won't get cut off)
+        // transform-origin: center left; //  scales to the right
+
     }
 
     .movie-poster {
         // height: 100%;
         width: 100%;
-        transition: transform 0.3s ease;
-        // object-fit: cover; // ensure the image covers the entire space without distortion with height & width
+        // transition: transform 0.3s ease;
 
     }
 
     // preview on hover
     .movie-preview {
+        position: absolute; // Overlay
+        top: 100%; // display below the poster
+        left: 0;
+        margin-top: -4px;
+
+
         width: 100%;
         // background-color: rgba(0, 0, 0, 0.7);
         background-color: black;
@@ -41,6 +55,10 @@
         box-sizing: border-box;
         // display: none; // initially hide preview
 
+        transition: height 0.3s ease;
+        // opacity: 0;
+        visibility: hidden; // hide the element & ignore user interaction
+        z-index: 5;
 
         h3 {
             margin-top: 0;
@@ -53,13 +71,16 @@
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+
         }
     }
 
-    // current using isHovered state
-    // &:hover .movie-preview {
-    //     display: block; //show preview when hovered
-    // }
+    // displays preview when .movie-card is hovered
+    &:hover .movie-preview {
+        // display: block; //show preview when hovered
+        // opacity: 1;
+        visibility: visible; // unhid when hovered
+    }
 
     .no-image-placeholder {
         height: 225px; //16:9 aspect ratio
@@ -76,6 +97,7 @@
     display: flex;
     align-items: center; //vertically align movies
     position: relative; //relative positioning so absolute children are relative to this
+    // height: 270px;
 
 
     &:hover .scroll-button {
@@ -112,25 +134,32 @@
             right: 0;
         }
     }
-}
 
-.movies-container {
-    display: flex; //align .movie-card in flex
-    overflow-x: auto; //horizontal scrollingwhen the movies exceed the container's width
-    padding: 20px 0px 20px 30px;
-    scroll-behavior: smooth;
-    // flex-grow: 1; //container to takes up all available horizontal space
 
-    // Hides scrollbar for Firefox
-    scrollbar-width: none;
-    // For Edge
-    -ms-overflow-style: none;
+    .movies-container {
+        display: flex; //align .movie-card in flex. default row
+        //horizontal scrolling when the movies exceed the container's width 
+        overflow-x: auto; // (clips children like .movie-card)
+        padding: 20px 0px 20px 30px;
+        scroll-behavior: smooth;
+        // flex-grow: 1; //container to takes up all available horizontal space
+        // height: 270px;
 
-    &::-webkit-scrollbar {
-        display: none; // Webkit browsers like Chrome and Safari to hide scrollbar
+        padding-bottom: 120px; // adjusted padding to allow for overlap without pushing content of preview
+        margin-bottom: -120px; // counteracts the added padding
+
+        // Hides scrollbar for Firefox
+        scrollbar-width: none;
+        // For Edge
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            display: none; // Webkit browsers like Chrome and Safari to hide scrollbar
+        }
+
+
     }
 }
-
 
 //movie grid component
 .movie-grid {
