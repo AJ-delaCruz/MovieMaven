@@ -32,16 +32,22 @@ const SearchBar: React.FC = () => {
     };
 
 
-    //limit search input API calls until .5 sec after user last input
+    //limit search input API calls until .3 sec after user last input
     const handleSearch = useCallback
-        (debounce(debouncedSearch, 500) //delay .5 sec
+        (debounce(debouncedSearch, 300) //delay .3 sec
             , []);
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (query) {
+            //prevent search results dropdown menu from showing up on the search results page
+            handleSearch.cancel();  // cancel the debounce delay
+
             setResults([]);  // clear the results
+            // setQuery(""); //clear input field 
+
             navigate(`/search-results?query=${query}`);
+
         }
     };
 
@@ -73,6 +79,7 @@ const SearchBar: React.FC = () => {
         }
     }, []);
 
+
     return (
         <div className="search-container" ref={containerRef}>
 
@@ -96,7 +103,7 @@ const SearchBar: React.FC = () => {
 
 
 
-            {isLoading && <CircularProgress />}
+            {/* {isLoading && <CircularProgress />} */}
 
             {/* {
                 error &&
