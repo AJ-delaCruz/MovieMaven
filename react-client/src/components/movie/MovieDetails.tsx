@@ -11,6 +11,7 @@ const MovieDetails: React.FC = () => {
     const [movie, setMovie] = useState<MovieType | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { tmdbId } = useParams<{ tmdbId: string }>();
+
     // const location = useLocation();
     // console.log(location.pathname);
 
@@ -35,7 +36,12 @@ const MovieDetails: React.FC = () => {
 
     if (error) return <p>{error}</p>;
 
-    if (!movie) return <CircularProgress />;
+    if (!movie) {
+        return <div
+            className="loader-container">
+            <CircularProgress />
+        </div>;
+    }
 
     return (
         <div className="movie-details">

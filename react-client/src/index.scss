@@ -3,7 +3,14 @@
   padding: 0;
   box-sizing: border-box; // ensures padding and borders don't add extra width/height
 
-  // border: 1px solid red; // TEST to temporarily add a border to all elements to see their boundaries
+  // border: 1px solid red; // DEBUGGING to temporarily add a border to all elements to see their boundaries
 
 
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 800px;
 }
