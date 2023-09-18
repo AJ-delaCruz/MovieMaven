@@ -1,6 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MovieType } from '../../types/movie';
 import "./movie.scss";
+import MovieMenu from './MovieMenu';
+import RatingIcon from './RatingIcon';
+import { useState } from 'react';
 
 interface MovieProps {
     movie: MovieType;
@@ -8,45 +11,47 @@ interface MovieProps {
 }
 
 const Movie: React.FC<MovieProps> = ({ movie }) => {
-
-    // const [isHovered, setIsHovered] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false); //let preview open when menu is clicked
 
     return (
-        <Link to={`/movie/${movie.id}`}>
+        <div className="movie-card-wrapper">
 
-            <div className="movie-card"
-            // onMouseEnter={() => setIsHovered(true)}
-            // onMouseLeave={() => setIsHovered(false)}
-            >
-                {
-                    movie.backdrop_path
-                        ? <img className="movie-poster" src={`https://image.tmdb.org/t/p/w400${movie.backdrop_path}`} loading="lazy" alt={movie.title} />
-                        : <h3 className="no-image-placeholder">No Image Available</h3>
-                }
-                {/* <div className="movie-title">{movie.title}</div> */}
+            <div className={`movie-card ${isMenuOpen ? 'active' : ''}`} >
+                <Link to={`/movie/${movie.id}`}>
+                    {
+                        movie.backdrop_path
+                            ? <img className="movie-poster" src={`https://image.tmdb.org/t/p/w400${movie.backdrop_path}`} loading="lazy" alt={movie.title} />
+                            : <h3 className="no-image-placeholder">No Image Available</h3>
+                    }
+                </Link>
 
-                {/* 
-                {
-                    isHovered ? (
-                        <div className="movie-preview">
-                            <h3>{movie.title}</h3>
-                            <p>{movie.overview}</p>
+                <div className={`movie-preview ${isMenuOpen ? 'active' : ''}`}>
 
+                    <div className="movie-header">
+                        <h3>{movie.title}</h3>
+
+                        <div className='movie-menu'>
+                            <MovieMenu movie={movie} onMenuToggle={setIsMenuOpen} />
                         </div>
-                    ) :
-                        (<div className="movie-title">{movie.title}</div>)
+                    </div>
 
-                } */}
+                    <div className="other-details">
+                        <RatingIcon rating={movie.vote_average || 0} />
 
-                <div className="movie-preview">
-                    <h3>{movie.title}</h3>
+                        <span>{new Date(movie.release_date).toLocaleDateString(undefined, { year: 'numeric' })}</span>
+
+
+                    </div>
+
                     <p>{movie.overview}</p>
 
                 </div>
 
                 <div className="movie-title">{movie.title}</div>
+
             </div>
-        </Link>
+
+        </div>
 
     );
 }
