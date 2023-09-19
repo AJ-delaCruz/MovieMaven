@@ -1,6 +1,7 @@
 package com.project.moviemaven.controller;
 
-import java.util.List;
+import java.security.Principal;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -8,10 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.moviemaven.model.Favorite;
+import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.service.FavoriteService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,23 +24,28 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     // Add a movie to user's favorites
-    @PostMapping("/add")
-    public ResponseEntity<String> addFavorite(@RequestParam Long userId, @RequestParam Long tmdbId) {
-        favoriteService.addFavorite(userId, tmdbId);
+    @PostMapping("/add/{tmdbId}")
+    public ResponseEntity<String> addFavorite(Principal principal, @PathVariable Long tmdbId) {
+        String username = principal.getName();
+        favoriteService.addFavorite(username, tmdbId);
         return ResponseEntity.ok("TMDB Movie Id " + tmdbId + "  added to favorites successfully.");
     }
 
     // Remove a movie from user's favorites
-    @DeleteMapping("/remove//{movieId}")
-    public ResponseEntity<String> removeFavorite(@RequestParam Long userId, @PathVariable Long movieId) {
-        favoriteService.removeFavorite(userId, movieId);
-        return ResponseEntity.ok("Movie " + movieId + " removed from favorites successfully.");
+    @DeleteMapping("/remove/{tmdbId}")
+    public ResponseEntity<String> removeFavorite(Principal principal, @PathVariable Long tmdbId) {
+        String username = principal.getName();
+
+        favoriteService.removeFavorite(username, tmdbId);
+        return ResponseEntity.ok("Movie " + tmdbId + " removed from favorites successfully.");
     }
 
-    // Get all favorite movies for a user
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Favorite>> getFavoritesByUser(@PathVariable Long userId) {
-        List<Favorite> favorites = favoriteService.getFavoritesByUser(userId);
+    // Get all favorite movies for user
+    @GetMapping
+    public ResponseEntity<Set<Movie>> getFavorites(Principal principal) {
+        String username = principal.getName();
+        Set<Movie> favorites = favoriteService.getFavorites(username);
         return ResponseEntity.ok(favorites);
     }
+
 }

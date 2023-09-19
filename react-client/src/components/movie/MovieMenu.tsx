@@ -4,7 +4,7 @@ import { MoreVert } from '@mui/icons-material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AddIcon from '@mui/icons-material/Add';
 import { MovieType } from '../../types/movie';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { backendUrl } from '../../utils/config';
 
 interface MovieMenuProps {
@@ -38,17 +38,20 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     const handleAddToWatchlist = async (movieId: number) => {
 
         try {
-            await axios.post(`${backendUrl}/api/user/watchlist/add/`, {
+            const response = await axios.post(`${backendUrl}/api/user/watchlist/add`, null, {
                 params: {
-                    movieId: movieId
+                    tmdbId: movieId
                 },
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
 
             });
+            console.log(response); //check if movie is added to watchlist
         } catch (error) {
-            console.error("Failed to add to watchlist: " + movieId, error);
+            const err = error as AxiosError;
+            console.log(err.response?.data);
+            console.error("Failed to add movie to watchlist: " + movieId, error);
         }
         handleCloseMenu();
     };
@@ -57,16 +60,16 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     // add movie to favorites
     const handleAddFavorite = async (movieId: number) => {
         try {
-            await axios.post(`${backendUrl}/api/favorite/add/`, {
-                params: {
-                    tmdbId: movieId
-                },
+            const response = await axios.post(`${backendUrl}/api/favorite/add/${movieId}`, null, { //not using req.body
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            console.log(response); //check if movie is added
         } catch (error) {
-            console.error("Failed to add to favorites: " + movieId, error);
+            const err = error as AxiosError;
+            console.log(err.response?.data);
+            console.error("Failed to add movie to favorites: " + movieId, error);
         }
         handleCloseMenu();
     };

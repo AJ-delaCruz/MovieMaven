@@ -1,7 +1,6 @@
 package com.project.moviemaven.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -9,67 +8,63 @@ import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.User;
-import com.project.moviemaven.repository.MovieRepository;
-import com.project.moviemaven.repository.UserRepository;
-
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class WatchListService {
 
-    private final UserRepository userRepository;
-    private final MovieRepository movieRepository;
     private final UserService userService;
     private final MovieService movieService;
 
     // add movie to user's watch list
-    public User addToWatchList(Long userId, Long tmdbId) {
+    @Transactional
+    public void addToWatchList(String username, Long tmdbId) {
+        User user = userService.getUserByUsername(username); // retrieve user from db
 
-        // get movie from DB else store it
-        Movie movie = movieService.addMovie(tmdbId);
-        // retrieve user
-        User user = userService.getUserById(userId);
+        // retrieve movie from TMDB and/or convert to 'Movie' object and store to db
+        Movie movie = movieService.getOrAddMovieToDb(tmdbId);
 
         // check if movie doesn't in User's watchList field
         if (!user.getWatchList().contains(movie)) {
             user.getWatchList().add(movie); // add movie to user's watchlist
-            movie.getUsers().add(user); // add user to the list of users in the Movie
+            movie.getUserWatchlist().add(user); // add user to the list of users in the Movie
         } else {
             throw new BadRequestException(movie.getTitle() + " already exists in watch list");
         }
 
-        userRepository.save(user); // save the changes to the HashSet User
-        movieRepository.save(movie); // save the changes to the HashSet Movie
-        return user;
+        // // note: automatic Persistence with @Transactional
+        // userRepository.save(user); // save the changes to User
+        // movieRepository.save(movie); // save the changes to Movie
 
     }
 
     // retrieve user's watchlist
-    public List<Movie> getWatchList(Long userId) {
-        User user = userService.getUserById(userId); // find user
-        return new ArrayList<>(user.getWatchList()); // convert return Set<Movie> watchList to List
+    public Set<Movie> getWatchList(String username) {
+        User user = userService.getUserByUsername(username);
+
+        // movies from watch list
+        return user.getWatchList();
 
     }
 
     // remove movie from user's watch list
-    public User removeFromWatchList(Long userId, Long tmdbId) {
-        User user = userService.getUserById(userId); // retrieve user from db
-        Movie movie = movieService.getMovieFromDb(tmdbId); // retrieve movie from db
+    @Transactional
+    public void removeFromWatchList(String username, Long tmdbId) {
+        User user = userService.getUserByUsername(username);// retrieve user from db
+        Movie movie = movieService.getMovieFromDb(tmdbId)// retrieve movie from db
+                .orElseThrow(() -> new NotFoundException("Movie not found in database"));
 
-        // remove Movie object from set else return false
-        if (!user.getWatchList().remove(movie)) {
-            throw new NotFoundException("Movie not found in the watchlist");
+        if (user.getWatchList().contains(movie)) {
+            user.getWatchList().remove(movie);
+            movie.getUserWatchlist().remove(user);
+        } else {
+            throw new NotFoundException(movie.getTitle() + " doesn't exist in watchlist");
         }
 
-        // Remove the user from the list of users who have the movie in their watchlist
-        if (!movie.getUsers().remove(user)) {
-            throw new NotFoundException("User not found in the movie's user list");
-        }
-
-        // update database
-        userRepository.save(user);
-        movieRepository.save(movie);
-        return user;
+        // // update database
+        // userRepository.save(user);
+        // movieRepository.save(movie);
     }
 }

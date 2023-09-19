@@ -1,7 +1,9 @@
 package com.project.moviemaven.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +26,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
@@ -40,13 +44,24 @@ public class User implements UserDetails {
     private String username;
     @JsonIgnore
     private String password;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Builder.Default
+    @JsonIgnore
     @ManyToMany
-    @JoinTable(
-        name = "user_watchlist", 
-        joinColumns = @JoinColumn(name = "user_id"), 
-        inverseJoinColumns = @JoinColumn(name = "movie_id"))
-    private Set<Movie> watchList = new HashSet<>();
+    @JoinTable(name = "user_watchlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    private Set<Movie> watchList = new LinkedHashSet<>();
+    // private List<Movie> watchList = new ArrayList<>();
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @Builder.Default
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
+    private Set<Movie> favorites = new LinkedHashSet<>();
+    // private List<Movie> favorites = new ArrayList<>();
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -76,5 +91,12 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    // // fix bidirectional relationship cycle
+    // @Override
+    // public int hashCode() {
+    // // only use the unique userId for hashing.
+    // return Objects.hash(id);
+    // }
 
 }
