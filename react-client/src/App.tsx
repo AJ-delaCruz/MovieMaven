@@ -7,15 +7,15 @@ import {
   Navigate
 } from "react-router-dom";
 import { useAuthContext } from "./contextAPI/AuthContext";
-import Login from './pages/Login/Login';
-import Register from './pages/Register/Register';
 import Navbar from './components/navbar/Navbar';
 import Footer from './components/footer/Footer';
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 import MovieDetails from './components/movie/MovieDetails';
-import Profile from './components/profile/Profile';
+import Profile from './pages/Profile/Profile';
 import Homepage from './pages/Homepage/Homepage';
-import './App.scss';
 import SearchResult from './pages/Search/SearchResult';
+import './App.scss';
 const App: React.FC = () => {
 
   // Define the type for children prop
@@ -76,7 +76,7 @@ const App: React.FC = () => {
           element: <Profile />,
         },
         {
-          path:"/search-results",
+          path: "/search-results",
           element: <SearchResult />,
         },
 
