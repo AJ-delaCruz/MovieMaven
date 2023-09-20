@@ -232,3 +232,51 @@
     gap: 16px; // todo: add space horizontally
     padding: 20px;
 }
+
+
+
+//movie profile
+.profile-movie {
+    display: flex;
+    border-bottom: 1px solid #444;
+    // padding: 10px 0;
+    // align-items: center;
+    margin-bottom: 10px;
+    // padding: 40px;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    width: 1200px;
+    // &:last-child {
+    //     border-bottom: none;
+    // }
+
+    .image-container {
+        flex: 1;
+        margin-right: 20px;
+        margin-bottom: -4px;
+
+        img {
+            max-width: 150px;
+            // max-height: 150px;
+            border-radius: 6px 0px 0px 6px; //left-top & bottom
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
+    }
+
+    .details-container {
+        flex: 2;
+
+        h3 {
+            margin-top: 10px;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        p,
+        span {
+            // margin-top: 5px;
+            color: #e4e4e4;
+        }
+    }
+}
