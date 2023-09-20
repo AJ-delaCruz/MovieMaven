@@ -1,21 +1,26 @@
 package com.project.moviemaven.model;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,6 +36,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,11 +51,23 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.ROLE_USER; // Default role
+
+    @Column(nullable = false, updatable = false)
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @Builder.Default
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_watchlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> watchList = new LinkedHashSet<>();
     // private List<Movie> watchList = new ArrayList<>();
@@ -58,14 +76,10 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     @Builder.Default
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> favorites = new LinkedHashSet<>();
     // private List<Movie> favorites = new ArrayList<>();
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private Role role = Role.ROLE_USER; // Default role
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
