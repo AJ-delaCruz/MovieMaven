@@ -38,8 +38,8 @@ const Login: React.FC = () => {
             });
 
             console.log(res.data);
-            const { accessToken } = res.data;
-            await login(accessToken)
+            const { access_token } = res.data;
+            await login(access_token)
 
             // Navigate to home page after successful login
             navigate('/');

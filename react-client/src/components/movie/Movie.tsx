@@ -47,7 +47,7 @@ const Movie: React.FC<MovieProps> = ({ movie }) => {
 
                 </div>
 
-                <div className="movie-title">{movie.title}</div>
+                {/* <div className="movie-title">{movie.title}</div> */}
 
             </div>
 

@@ -11,12 +11,16 @@ const RatingIcon: React.FC<RatingIconProps> = ({ rating }) => {
     const fullStars = Math.floor(rating / 2); //convert to 5, tmdb uses rating up to 10
     const halfStar = rating % 2 >= 1 ? 1 : 0; //add half star when remainder is >= 1 (not 0.5 since 10 point scale)
     const emptyStars = 5 - fullStars - halfStar;
-    
+
     return (
         <div>
-            {Array(fullStars).fill(<Star />)}
+            {/* {Array(fullStars).fill(<Star />)}
             {halfStar ? <StarHalf /> : null}
-            {Array(emptyStars).fill(<StarBorder />)}
+            {Array(emptyStars).fill(<StarBorder />)} */}
+
+            {Array.from({ length: fullStars }).map((_, index) => <Star key={index} />)}
+            {halfStar ? <StarHalf key="half" /> : null}
+            {Array.from({ length: emptyStars }).map((_, index) => <StarBorder key={`empty-${index}`} />)}
 
         </div>
     );

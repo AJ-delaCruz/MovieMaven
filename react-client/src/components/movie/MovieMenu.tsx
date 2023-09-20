@@ -9,7 +9,7 @@ import { backendUrl } from '../../utils/config';
 
 interface MovieMenuProps {
     movie: MovieType;
-    onMenuToggle: (isOpen: boolean) => void; //to keep preview display
+    onMenuToggle?: (isOpen: boolean) => void; //to keep preview display
 
 }
 
@@ -23,15 +23,14 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
 
     const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(e.currentTarget);
-        onMenuToggle(true);
+        if (onMenuToggle) onMenuToggle(true);
 
 
     };
 
     const handleCloseMenu = () => {
         setAnchorEl(null);
-        onMenuToggle(false);
-
+        if (onMenuToggle) onMenuToggle(false);
     };
 
     //  add movie to watchlist
