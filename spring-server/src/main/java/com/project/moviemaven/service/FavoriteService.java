@@ -1,9 +1,14 @@
 package com.project.moviemaven.service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
+import com.project.moviemaven.dto.MovieDTO;
+import com.project.moviemaven.dto.MovieMapper;
 import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 // import com.project.moviemaven.model.Favorite;
@@ -24,6 +29,7 @@ public class FavoriteService {
 
     // add movie to favorite
     @Transactional
+    // @CacheEvict(value = "user", key = "#username")
     public void addFavorite(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
@@ -65,10 +71,14 @@ public class FavoriteService {
 
     // retrieve favorite movies of user
     @Transactional
-    public Set<Movie> getFavorites(String username) {
+    public List<MovieDTO> getFavorites(String username) {
         User user = userService.getUserByUsername(username);
 
-        return user.getFavorites();
+        Set<Movie> favoriteMovies = user.getFavorites();
+        return favoriteMovies.stream()
+                .map(movie -> MovieMapper.toMovieDTO(movie))
+                .collect(Collectors.toList());
     }
+
 
 }

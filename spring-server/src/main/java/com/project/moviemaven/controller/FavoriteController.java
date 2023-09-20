@@ -1,6 +1,7 @@
 package com.project.moviemaven.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.moviemaven.dto.MovieDTO;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.service.FavoriteService;
 
@@ -31,6 +33,14 @@ public class FavoriteController {
         return ResponseEntity.ok("TMDB Movie Id " + tmdbId + "  added to favorites successfully.");
     }
 
+    // Get all favorite movies for user
+    @GetMapping
+    public ResponseEntity<List<MovieDTO>> getFavorites(Principal principal) {
+        String username = principal.getName();
+        List<MovieDTO> favorites = favoriteService.getFavorites(username);
+        return ResponseEntity.ok(favorites);
+    }
+
     // Remove a movie from user's favorites
     @DeleteMapping("/remove/{tmdbId}")
     public ResponseEntity<String> removeFavorite(Principal principal, @PathVariable Long tmdbId) {
@@ -38,14 +48,6 @@ public class FavoriteController {
 
         favoriteService.removeFavorite(username, tmdbId);
         return ResponseEntity.ok("Movie " + tmdbId + " removed from favorites successfully.");
-    }
-
-    // Get all favorite movies for user
-    @GetMapping
-    public ResponseEntity<Set<Movie>> getFavorites(Principal principal) {
-        String username = principal.getName();
-        Set<Movie> favorites = favoriteService.getFavorites(username);
-        return ResponseEntity.ok(favorites);
     }
 
 }

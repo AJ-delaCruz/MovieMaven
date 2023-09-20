@@ -1,6 +1,7 @@
 package com.project.moviemaven.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.moviemaven.model.Movie;
+import com.project.moviemaven.dto.MovieDTO;
 import com.project.moviemaven.service.WatchListService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,9 @@ public class WatchListController {
 
     // retrieve user's watchlist
     @GetMapping
-    public ResponseEntity<Set<Movie>> getWatchlist(Principal principal) {
+    public ResponseEntity<List<MovieDTO>> getWatchlist(Principal principal) {
         String username = principal.getName();
-        Set<Movie> movies = watchListService.getWatchList(username);
+        List<MovieDTO> movies = watchListService.getWatchList(username);
         return ResponseEntity.ok(movies);
     }
 

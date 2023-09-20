@@ -1,9 +1,14 @@
 package com.project.moviemaven.service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
+import com.project.moviemaven.dto.MovieDTO;
+import com.project.moviemaven.dto.MovieMapper;
 import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
@@ -41,12 +46,14 @@ public class WatchListService {
     }
 
     // retrieve user's watchlist
-    public Set<Movie> getWatchList(String username) {
+    @Transactional
+    public List<MovieDTO> getWatchList(String username) {
         User user = userService.getUserByUsername(username);
-
         // movies from watch list
-        return user.getWatchList();
-
+        Set<Movie> watchlistMovies = user.getWatchList();
+        return watchlistMovies.stream()
+                .map(MovieMapper::toMovieDTO)
+                .collect(Collectors.toList());
     }
 
     // remove movie from user's watch list
