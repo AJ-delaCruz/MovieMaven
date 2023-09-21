@@ -1,5 +1,6 @@
 package com.project.moviemaven.controller;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,14 +25,36 @@ public class RatingController {
 
     private final RatingService ratingService;
 
+    // add rating
+    @PostMapping("/{movieId}")
+    public ResponseEntity<String> addOrUpdateRating(Principal principal, @PathVariable Long movieId,
+            @RequestBody Float ratingValue) {
+        String username = principal.getName();
+
+        ratingService.addOrUpdateRating(username, movieId, ratingValue);
+
+        return ResponseEntity.ok("Rating added for movie ID " + movieId);
+    }
+
+    // delete rating
+    @DeleteMapping("/{movieId}")
+    public ResponseEntity<String> removeRating(Principal principal, @PathVariable Long movieId) {
+        String username = principal.getName();
+        ratingService.removeRating(username, movieId);
+
+        return ResponseEntity.ok("Rating removed");
+
+    }
+
     // movie ratings by user
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Rating>> getRatingsByUser(@PathVariable Long userId) {
-        List<Rating> ratings = ratingService.getRatingsByUser(userId);
+    @GetMapping("/user")
+    public ResponseEntity<List<Rating>> getRatingsByUser(Principal principal) {
+        String username = principal.getName();
+        List<Rating> ratings = ratingService.getRatingsByUser(username);
         return ResponseEntity.ok(ratings);
     }
 
-    // retrieve all ratings for movie from users
+    // retrieve all ratings for movie from all users
     @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<Rating>> getRatingsForMovie(@PathVariable Long movieId) {
         List<Rating> ratings = ratingService.getRatingsForMovie(movieId);
@@ -45,27 +68,6 @@ public class RatingController {
         Double avgRating = ratingService.getAverageRatingForMovie(movieId);
 
         return ResponseEntity.ok(avgRating);
-    }
-
-    // add rating
-    @PostMapping("/{userId}/{movieId}")
-    public ResponseEntity<String> addOrUpdateRating(
-            @PathVariable Long userId,
-            @PathVariable Long movieId,
-            @RequestBody Float ratingValue) {
-
-        ratingService.addOrUpdateRating(userId, movieId, ratingValue);
-
-        return ResponseEntity.ok("Rating added for movie ID " + movieId);
-    }
-
-    // delete rating
-    @DeleteMapping("/{userId}/{movieId}")
-    public ResponseEntity<String> removeRating(@PathVariable Long userId, @PathVariable Long movieId) {
-        ratingService.removeRating(userId, movieId);
-
-        return ResponseEntity.ok("Rating removed");
-
     }
 
 }

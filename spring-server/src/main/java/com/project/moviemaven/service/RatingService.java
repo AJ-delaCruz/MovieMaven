@@ -1,18 +1,17 @@
 package com.project.moviemaven.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.Rating;
-import com.project.moviemaven.repository.MovieRepository;
+import com.project.moviemaven.model.User;
 import com.project.moviemaven.repository.RatingRepository;
-import com.project.moviemaven.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,13 +19,80 @@ import lombok.RequiredArgsConstructor;
 public class RatingService {
 
     private final RatingRepository ratingRepository;
-    private final UserRepository userRepository;
-    private final MovieRepository movieRepository;
+    private final UserService userService;
     private final MovieService movieService;
 
+    // add or update rating
+    @Transactional
+    public void addOrUpdateRating(String username, Long tmdbId, Float ratingValue) {
+        if (ratingValue < 1 || ratingValue > 10) {
+            throw new IllegalArgumentException("Rating value must be between 1 and 10");
+        }
+        User user = userService.getUserByUsername(username); // retrieve user from db
+
+        // retrieve movie from TMDB else convert to 'Movie' object and store to db
+        Movie movie = movieService.getOrAddMovieToDb(tmdbId);
+
+        // check if it's already rated
+        Rating rating = ratingRepository.findByUserIdAndMovieId(user.getId(), movie.getId()) // local movie id
+                .orElse(new Rating());
+
+        rating.setUser(user);
+        rating.setMovie(movie);
+        rating.setRatingValue(ratingValue);
+        ratingRepository.save(rating);
+    }
+
+    // delete rating for specific movie
+    @Transactional
+    public void removeRating(String username, Long movieId) {
+        User user = userService.getUserByUsername(username); // retrieve user from db
+
+        Rating existingRating = ratingRepository.findByUserIdAndMovieId(user.getId(), movieId)
+                .orElseThrow(() -> new NotFoundException("No rating found for " + movieId + " in database"));
+
+        ratingRepository.delete(existingRating);
+
+    }
+
+    // add rating
+    @Transactional
+    public void addRating(String username, Long tmdbId, Float ratingValue) {
+        if (ratingValue < 1 || ratingValue > 10) {
+            throw new IllegalArgumentException("Rating value must be between 1 and 10");
+        }
+        User user = userService.getUserByUsername(username); // retrieve user from db
+
+        // retrieve movie from TMDB else convert to 'Movie' object and store to db
+        Movie movie = movieService.getOrAddMovieToDb(tmdbId);
+
+        // add new rating
+        Rating rating = new Rating();
+
+        rating.setUser(user);
+        rating.setMovie(movie);
+        rating.setRatingValue(ratingValue);
+        ratingRepository.save(rating);
+    }
+
+    // update rating
+    @Transactional
+    public void updateRating(String username, Long movieId, Long ratingId, Float ratingValue) {
+        if (ratingValue < 1 || ratingValue > 10) {
+            throw new IllegalArgumentException("Rating value must be between 1 and 10");
+        }
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new NotFoundException("No rating found for " + movieId + " in database"));
+        rating.setRatingValue(ratingValue);
+        // ratingRepository.save(rating);
+
+    }
+
     // retrieve movie ratings by user
-    public List<Rating> getRatingsByUser(Long userId) {
-        return ratingRepository.findByUserId(userId);
+    public List<Rating> getRatingsByUser(String username) {
+        User user = userService.getUserByUsername(username); // retrieve user from db
+
+        return ratingRepository.findByUserId(user.getId());
     }
 
     // retrieve all ratings for movie from all users
@@ -49,42 +115,12 @@ public class RatingService {
                 .orElse(0.0); // default to 0 if there are no ratings
     }
 
-    // add rating
-    @Transactional
-    public void addOrUpdateRating(Long userId, Long tmdbId, Float ratingValue) {
-        if (ratingValue < 1 || ratingValue > 10) {
-            throw new IllegalArgumentException("Rating value must be between 1 and 10");
-        }
-
-        // Check if movie exists in the 'Movie' postgres table
-        Movie movie = movieRepository.findByTmdbId(tmdbId).orElse(null);
-
-        // if not, add to db
-        if (movie == null) {
-            // retrieve movie from TMDB, convert to 'Movie' object, and store to db
-            movie = movieService.addMovie(tmdbId);
-        }
-
-        // check if it's already rated
-        Rating rating = ratingRepository.findByUserIdAndMovieId(userId, movie.getId()) // local movie id
-                .orElse(new Rating());
-
-        rating.setUser(userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found in database")));
-
-        rating.setMovie(movie);
-        rating.setRatingValue(ratingValue);
-        rating.setDate(LocalDateTime.now());
-
-        ratingRepository.save(rating);
+    // retrieve movies rated by user
+    public List<Movie> getRatedMoviesByUser(String username) {
+        User user = userService.getUserByUsername(username);
+        return user.getRatings().stream()
+                .map(Rating::getMovie)
+                .collect(Collectors.toList());
     }
 
-    // delete rating
-    public void removeRating(Long userId, Long movieId) {
-        Rating existingRating = ratingRepository.findByUserIdAndMovieId(userId, movieId)
-                .orElseThrow(() -> new NotFoundException("No rating found for " + movieId + " in database"));
-
-        ratingRepository.delete(existingRating);
-
-    }
 }
