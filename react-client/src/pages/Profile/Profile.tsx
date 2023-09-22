@@ -14,7 +14,7 @@ const Profile = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [favorites, setFavorites] = useState<MovieType[]>([]);
     const [watchlist, setWatchlist] = useState<MovieType[]>([]);
-
+    const [ratings, setRatings] = useState<MovieType[]>([]);
 
     const getUser = async () => {
         setIsLoading(true);
@@ -70,13 +70,34 @@ const Profile = () => {
         }
     };
 
+    const getRatedMovies = async () => {
+        // setIsLoading(true);
+        try {
+            const response = await axios.get(`${backendUrl}/api/rating/movie/rated`, {
+                headers: {
+                    'Authorization': `Bearer ${currentUser}`
+                }
+            });
+            console.log(response.data);
+            setRatings(response.data);
+
+        } catch (error) {
+            console.error("Failed to retrieve rated movies:", error);
+        }
+        // finally {
+        //     setIsLoading(false);
+        // }
+    };
+
 
     useEffect(() => {
 
         getUser();
         getFavorites();
         getWatchlist();
+        getRatedMovies();
     }, []);
+
 
     if (isLoading || user == null) {
         return (
@@ -91,7 +112,7 @@ const Profile = () => {
     return (
         <div className="user-profile">
             <ProfileDetails user={user} />
-            <Tab favorites={favorites} watchlist={watchlist} />
+            <Tab favorites={favorites} watchlist={watchlist} ratings={ratings} />
 
 
         </div>
