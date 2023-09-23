@@ -9,6 +9,7 @@ import { backendUrl } from '../../utils/config';
 import StarIcon from '@mui/icons-material/Star';
 import Rating from '../rating/Rating';
 import './movie.scss';
+import { useRatingsContext } from '../../contextAPI/RatingsContext';
 interface MovieMenuProps {
     movie: MovieType;
     onMenuToggle?: (isOpen: boolean) => void; //to keep preview display
@@ -18,10 +19,11 @@ interface MovieMenuProps {
 const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     // console.log("Rendering MovieMenu for movie:", movie.title);
     const token = localStorage.getItem("token");
+    const { ratings, setRatings, addOrUpdateRating } = useRatingsContext();
+    const ratedMovies = ratings[movie.id] || 0;
 
     //menu item for adding to watchlist or favorite
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [userRating, setUserRating] = useState<number>(0);
     const [ratingAnchor, setRatingAnchor] = useState<null | HTMLElement>(null); //refrence anchorlEl for rating modal
 
     const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -88,7 +90,7 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
 
 
     const handleRatingChange = async (newRating: number) => {
-        setUserRating(newRating);
+        // setUserRating(newRating);
 
         try {
             const response = await axios.post(`${backendUrl}/api/rating/${movie.id}`, newRating, {
@@ -97,6 +99,8 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                     'Content-Type': 'application/json'
                 }
             });
+
+            addOrUpdateRating(movie.id, newRating);
             console.log(response); //check if rating is added
         } catch (error) {
             const err = error as AxiosError;
@@ -138,7 +142,7 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                     onClick={openRatingModal}
                 >
                     <ListItemIcon>
-                        <StarIcon fontSize="medium" />
+                        <StarIcon fontSize="medium" style={{ color: ratedMovies > 0 ? "gold" : "inherit" }} />
                     </ListItemIcon>
                     <ListItemText primary="Rating" />
                 </MenuItem>
@@ -159,10 +163,24 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                     horizontal: 'left',
                 }}
             >
-                <Box style={{ padding: '20px', background: 'white', borderRadius: '5px' }}>
-                    <Typography style={{ marginLeft: '10px' }} variant="h6">Rate movie</Typography>
-                    <Rating currentRating={userRating} onRatingChange={handleRatingChange} />
+                <Box
+                    sx={{
+                        padding: '20px',
+                        background: '#ffffff',
+                        color: '#2e2e2e',
+                        borderRadius: '5px',
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                        transition: 'background 0.2s',
+                        '&:hover': {
+                            background: '#f5f5f5',
+                        },
+                    }}
+                >
+                    <Typography sx={{ marginLeft: '10px' }} variant="h6">Rate movie</Typography>
+                    <Rating currentRating={ratedMovies} onRatingChange={handleRatingChange} />
                 </Box>
+
             </Popover>
         </div >
     )

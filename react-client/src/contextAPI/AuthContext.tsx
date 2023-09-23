@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, ReactNode } from "react";
+import { useRatingsContext } from "./RatingsContext";
 
 //define auth context type to share
 interface AuthContextType {
@@ -31,14 +32,20 @@ interface AuthProviderProps {
 // create the component to share states to its children components
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [currentUser, setCurrentUser] = useState<string | null>(localStorage.getItem('token'));
-
+    const { fetchRatings } = useRatingsContext();
+    
     const login = async (token: string) => {
         localStorage.setItem("token", token);
         setCurrentUser(token);
+
+        // Fetch ratings for the user immediately after logging in
+        fetchRatings();
     };
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("ratings"); // remove movie ratings
+
         setCurrentUser(null);
     };
 

@@ -16,8 +16,10 @@ const Rating: React.FC<RatingProps> = ({ currentRating, onRatingChange }) => {
         const fullStarValue = (index + 1) * 2; //2 points per 1 star
         const hoverValue = hoveredStar || currentRating;
 
-        if (hoverValue >= fullStarValue) return <Star />;
-        if (hoverValue >= fullStarValue - 1) return <StarHalf />;
+        // if (hoverValue >= fullStarValue) return <Star />;
+        // if (hoverValue >= fullStarValue - 1) return <StarHalf />;
+        if (hoverValue >= fullStarValue) return <Star style={{ color: "gold" }} />;
+        if (hoverValue >= fullStarValue - 1) return <StarHalf style={{ color: "gold" }} />;
         return <StarBorder />; //empty star
     };
 
