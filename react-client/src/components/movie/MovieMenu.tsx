@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, Box, Modal, Typography, Popover } from '@mui/material';
+import { IconButton, Menu, MenuItem, ListItemIcon, ListItemText, Box, Typography, Popover } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import AddIcon from '@mui/icons-material/Add';
 import { MovieType } from '../../types/movie';
-import axios, { AxiosError } from 'axios';
-import { backendUrl } from '../../utils/config';
 import StarIcon from '@mui/icons-material/Star';
 import Rating from '../rating/Rating';
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import './movie.scss';
 import { useRatingsContext } from '../../contextAPI/RatingsContext';
+import { useFavoritesContext } from '../../contextAPI/FavoritesContext';
+import { useWatchlistContext } from '../../contextAPI/WatchlistContext';
 interface MovieMenuProps {
     movie: MovieType;
     onMenuToggle?: (isOpen: boolean) => void; //to keep preview display
@@ -18,9 +19,10 @@ interface MovieMenuProps {
 
 const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     // console.log("Rendering MovieMenu for movie:", movie.title);
-    const token = localStorage.getItem("token");
-    const { ratings, setRatings, addOrUpdateRating } = useRatingsContext();
+    const { ratings, addOrUpdateRating } = useRatingsContext();
     const ratedMovies = ratings[movie.id] || 0;
+    const { favorites, addFavorite, removeFavorite } = useFavoritesContext();
+    const { watchlist, addToWatchlist, removeFromWatchlist } = useWatchlistContext();
 
     //menu item for adding to watchlist or favorite
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -48,65 +50,33 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
         if (onMenuToggle) onMenuToggle(false); //close preview after
     }
 
-    //  add movie to watchlist
-    const handleAddToWatchlist = async (movieId: number) => {
-
-        try {
-            const response = await axios.post(`${backendUrl}/api/user/watchlist/add`, null, {
-                params: {
-                    tmdbId: movieId
-                },
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-
-            });
-            console.log(response); //check if movie is added to watchlist
-        } catch (error) {
-            const err = error as AxiosError;
-            console.log(err.response?.data);
-            console.error("Failed to add movie to watchlist: " + movieId, error);
+    //  add/remove movie to watchlist
+    const handleWatchlistToggle = async (movieId: number) => {
+        if (watchlist[movie.id]) {
+            removeFromWatchlist(movieId);
+        } else {
+            addToWatchlist(movieId);
         }
-        handleCloseMenu();
+        //  handleCloseMenu();
     };
 
 
-    // add movie to favorites
-    const handleAddFavorite = async (movieId: number) => {
-        try {
-            const response = await axios.post(`${backendUrl}/api/favorite/add/${movieId}`, null, { //not using req.body
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            console.log(response); //check if movie is added
-        } catch (error) {
-            const err = error as AxiosError;
-            console.log(err.response?.data);
-            console.error("Failed to add movie to favorites: " + movieId, error);
+    // add/remove movie to favorites
+    const handleFavoriteToggle = async (movieId: number) => {
+        if (favorites[movie.id]) {
+            removeFavorite(movieId);
+        } else {
+            addFavorite(movieId);
         }
-        handleCloseMenu();
+        // handleCloseMenu();
     };
 
 
+    //add rating
     const handleRatingChange = async (newRating: number) => {
-        // setUserRating(newRating);
+        //rating context api
+        addOrUpdateRating(movie.id, newRating);
 
-        try {
-            const response = await axios.post(`${backendUrl}/api/rating/${movie.id}`, newRating, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            addOrUpdateRating(movie.id, newRating);
-            console.log(response); //check if rating is added
-        } catch (error) {
-            const err = error as AxiosError;
-            console.log(err.response?.data);
-            console.error("Failed to add rating to movie: ", error);
-        }
         // closeRatingModal();  // close the modal once rating is set
     };
 
@@ -120,29 +90,35 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
 
                 {/* add to watchlist */}
-                <MenuItem onClick={() => handleAddToWatchlist(movie.id)} >
+                <MenuItem onClick={() => handleWatchlistToggle(movie.id)}>
                     <ListItemIcon>
-                        <AddIcon fontSize="small" />
+                        {watchlist[movie.id]
+                            ? <BookmarkRemoveIcon fontSize="small" style={{ color: "blue" }} />
+                            : <BookmarkIcon fontSize="small" />
+                        }
                     </ListItemIcon>
                     <ListItemText primary="Watchlist" />
                 </MenuItem>
 
+
                 {/* add to favorite */}
                 <MenuItem
-                    onClick={() => handleAddFavorite(movie.id)}
+                    onClick={() => handleFavoriteToggle(movie.id)}
                 >
                     <ListItemIcon>
-                        <FavoriteIcon fontSize="small" />
+                        <FavoriteIcon fontSize="small" style={{ color: favorites[movie.id] ? "red" : "inherit" }}
+                        />
                     </ListItemIcon>
                     <ListItemText primary="Favorite" />
                 </MenuItem>
+
 
                 {/* Rating movies  */}
                 <MenuItem
                     onClick={openRatingModal}
                 >
                     <ListItemIcon>
-                        <StarIcon fontSize="medium" style={{ color: ratedMovies > 0 ? "gold" : "inherit" }} />
+                        <StarIcon fontSize="medium" style={{ color: ratedMovies > 0 ? "gold" : "inherit", marginLeft: '-2px' }} />
                     </ListItemIcon>
                     <ListItemText primary="Rating" />
                 </MenuItem>
@@ -165,7 +141,7 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
             >
                 <Box
                     sx={{
-                        padding: '20px',
+                        padding: '15px',
                         background: '#ffffff',
                         color: '#2e2e2e',
                         borderRadius: '5px',
@@ -177,8 +153,9 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                         },
                     }}
                 >
-                    <Typography sx={{ marginLeft: '10px' }} variant="h6">Rate movie</Typography>
-                    <Rating currentRating={ratedMovies} onRatingChange={handleRatingChange} />
+                    {/* <Typography sx={{ marginLeft: '10px' }} variant="h6">Rate movie</Typography> */}
+                    <Rating currentRating={ratedMovies} onRatingChange={handleRatingChange} movieId={movie.id} />
+
                 </Box>
 
             </Popover>
