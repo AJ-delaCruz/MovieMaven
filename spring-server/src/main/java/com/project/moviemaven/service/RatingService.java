@@ -3,13 +3,17 @@ package com.project.moviemaven.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.moviemaven.dto.MovieDTO;
+import com.project.moviemaven.dto.MovieMapper;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.Rating;
 import com.project.moviemaven.model.User;
+import com.project.moviemaven.repository.MovieRepository;
 import com.project.moviemaven.repository.RatingRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final UserService userService;
     private final MovieService movieService;
+    private final MovieRepository movieRepository;
 
     // add or update rating
     @Transactional
@@ -45,11 +50,14 @@ public class RatingService {
 
     // delete rating for specific movie
     @Transactional
-    public void removeRating(String username, Long movieId) {
+    public void removeRating(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
-        Rating existingRating = ratingRepository.findByUserIdAndMovieId(user.getId(), movieId)
-                .orElseThrow(() -> new NotFoundException("No rating found for " + movieId + " in database"));
+        Movie movie = movieRepository.findByTmdbId(tmdbId) // retrieve movie using tmdb ID to get Movie ID
+                .orElseThrow(() -> new NotFoundException("No movie found with TMDB ID: " + tmdbId));
+
+        Rating existingRating = ratingRepository.findByUserIdAndMovieId(user.getId(), movie.getId())
+                .orElseThrow(() -> new NotFoundException("No rating found for " + tmdbId + " in database"));
 
         ratingRepository.delete(existingRating);
 
@@ -100,6 +108,7 @@ public class RatingService {
         return ratingRepository.findByMovieId(movieId);
     }
 
+    // TODO
     // average rating for specific movie
     public Double getAverageRatingForMovie(Long movieId) {
         List<Rating> ratings = ratingRepository.findByMovieId(movieId);
@@ -116,10 +125,17 @@ public class RatingService {
     }
 
     // retrieve movies rated by user
-    public List<Movie> getRatedMoviesByUser(String username) {
+    @Transactional(readOnly = true)
+    public List<MovieDTO> getRatedMoviesByUser(String username) {
         User user = userService.getUserByUsername(username);
-        return user.getRatings().stream()
+        // retrieve movies
+        List<Movie> ratedMovies = user.getRatings().stream()
                 .map(Rating::getMovie)
+                .collect(Collectors.toList());
+
+        // return needed movie data
+        return ratedMovies.stream()
+                .map(movie -> MovieMapper.toMovieDTO(movie))
                 .collect(Collectors.toList());
     }
 

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.moviemaven.dto.MovieDTO;
 import com.project.moviemaven.model.Rating;
 import com.project.moviemaven.service.RatingService;
 
@@ -42,11 +43,11 @@ public class RatingController {
         String username = principal.getName();
         ratingService.removeRating(username, movieId);
 
-        return ResponseEntity.ok("Rating removed");
+        return ResponseEntity.ok("Rating removed: " + movieId);
 
     }
 
-    // movie ratings by user
+    // retrieve movie ratings by user
     @GetMapping("/user")
     public ResponseEntity<List<Rating>> getRatingsByUser(Principal principal) {
         String username = principal.getName();
@@ -68,6 +69,16 @@ public class RatingController {
         Double avgRating = ratingService.getAverageRatingForMovie(movieId);
 
         return ResponseEntity.ok(avgRating);
+    }
+
+    // retrieve rated movies by user
+    @GetMapping("/movie/rated")
+    public ResponseEntity<List<MovieDTO>> getRatedMoviesByUser(Principal principal) {
+        String username = principal.getName();
+
+        List<MovieDTO> movies = ratingService.getRatedMoviesByUser(username);
+
+        return ResponseEntity.ok(movies);
     }
 
 }
