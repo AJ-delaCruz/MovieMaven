@@ -4,6 +4,8 @@ import './index.scss';
 import App from './App';
 import { AuthProvider } from './contextAPI/AuthContext';
 import { RatingsProvider } from './contextAPI/RatingsContext';
+import { FavoritesProvider } from './contextAPI/FavoritesContext';
+import { WatchlistProvider } from './contextAPI/WatchlistContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,9 +14,13 @@ root.render(
   <React.StrictMode>
 
     <RatingsProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <FavoritesProvider>
+        <WatchlistProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </WatchlistProvider>
+      </FavoritesProvider>
     </RatingsProvider>
 
   </React.StrictMode>
