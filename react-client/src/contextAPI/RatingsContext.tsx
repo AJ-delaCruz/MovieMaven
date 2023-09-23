@@ -5,7 +5,7 @@ import axios from "axios";
 
 type RatingsContextType = {
     ratings: Record<number, number>; // key: movieId, value: ratingValue
-    setRatings: (ratings: Record<number, number>) => void;
+    // setRatings: (ratings: Record<number, number>) => void; //encapsulate in functions
     addOrUpdateRating: (movieId: number, ratingValue: number) => void;
     removeRating: (movieId: number) => void;
     fetchRatings: () => {}
@@ -38,19 +38,44 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
     const [ratings, setRatings] = useState<Record<number, number>>(initialRatings);
 
 
-    const addOrUpdateRating = (movieId: number, ratingValue: number) => {
-        setRatings(currRatings => ({
-            ...currRatings,
-            [movieId]: ratingValue
-        }));
+    const addOrUpdateRating = async (movieId: number, ratingValue: number) => {
+        try {
+            const response = await axios.post(`${backendUrl}/api/rating/${movieId}`, ratingValue, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log(response);
+            setRatings(currRatings => ({
+                ...currRatings,
+                [movieId]: ratingValue
+            }));
+        } catch (error) {
+            console.error("Failed to add or update rating: ", error);
+        }
     };
 
-    const removeRating = (movieId: number) => {
-        setRatings(prevRatings => {
-            const updatedRatings = { ...prevRatings };
-            delete updatedRatings[movieId];
-            return updatedRatings;
-        });
+    const removeRating = async (movieId: number) => {
+        console.log(movieId);
+        try {
+            const response = await axios.delete(`${backendUrl}/api/rating/${movieId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                }
+            });
+
+            console.log(response);
+            setRatings(prevRatings => {
+                const updatedRatings = { ...prevRatings };
+                delete updatedRatings[movieId]; //delete key movieid property from rating object
+                return updatedRatings;
+            });
+
+        } catch (error) {
+            console.error("Failed to remove rating: ", error);
+        }
+
     }
 
 
@@ -86,7 +111,7 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
 
 
     return (
-        <RatingsContext.Provider value={{ ratings, setRatings, fetchRatings, addOrUpdateRating, removeRating }}>
+        <RatingsContext.Provider value={{ ratings, fetchRatings, addOrUpdateRating, removeRating }}>
             {children}
         </RatingsContext.Provider>
     );
