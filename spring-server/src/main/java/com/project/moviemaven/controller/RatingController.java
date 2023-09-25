@@ -1,7 +1,6 @@
 package com.project.moviemaven.controller;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -47,12 +46,12 @@ public class RatingController {
 
     }
 
-    // retrieve movie ratings by user
+    // retrieve movie with ratings by user
     @GetMapping("/user")
-    public ResponseEntity<List<Rating>> getRatingsByUser(Principal principal) {
+    public ResponseEntity<List<MovieDTO>> getRatingsWithMoviesByUser(Principal principal) {
         String username = principal.getName();
-        List<Rating> ratings = ratingService.getRatingsByUser(username);
-        return ResponseEntity.ok(ratings);
+        List<MovieDTO> MovieAndRating = ratingService.getRatingsWithMoviesByUser(username);
+        return ResponseEntity.ok(MovieAndRating);
     }
 
     // retrieve all ratings for movie from all users

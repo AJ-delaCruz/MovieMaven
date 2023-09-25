@@ -63,6 +63,31 @@ public class RatingService {
 
     }
 
+
+    //retrieve movies with user ratings
+    @Transactional(readOnly = true)
+    public List<MovieDTO> getRatingsWithMoviesByUser(String username) {
+        User user = userService.getUserByUsername(username);
+
+        // Fetch ratings by user
+        List<Rating> ratings = ratingRepository.findByUserId(user.getId());
+
+        // Convert to Movie DTO with user rating
+        return ratings.stream()
+                .map(rating -> {
+                    MovieDTO dto = MovieMapper.toMovieDTO(rating.getMovie());
+                    dto.setUserRating(rating.getRatingValue());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
+
+/*
+ * Unused, saved for future
+ */
     // add rating
     @Transactional
     public void addRating(String username, Long tmdbId, Float ratingValue) {
@@ -96,7 +121,7 @@ public class RatingService {
 
     }
 
-    // retrieve movie ratings by user
+    // retrieve movie & user objects with rating by user
     public List<Rating> getRatingsByUser(String username) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
@@ -138,5 +163,7 @@ public class RatingService {
                 .map(movie -> MovieMapper.toMovieDTO(movie))
                 .collect(Collectors.toList());
     }
+
+
 
 }

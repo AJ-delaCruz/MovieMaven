@@ -27,4 +27,6 @@ public class MovieDTO {
 
     private Set<String> actors;
     private Set<String> directors;
+
+    private Float userRating;
 }
