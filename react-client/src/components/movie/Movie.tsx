@@ -2,8 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MovieType } from '../../types/movie';
 import "./movie.scss";
 import MovieMenu from './MovieMenu';
-import RatingIcon from './RatingIcon';
+import RatingIcon from '../rating/RatingIcon';
 import { useState } from 'react';
+
 
 interface MovieProps {
     movie: MovieType;
@@ -15,7 +16,6 @@ const Movie: React.FC<MovieProps> = ({ movie }) => {
 
     return (
         <div className="movie-card-wrapper">
-
             <div className={`movie-card ${isMenuOpen ? 'active' : ''}`} >
                 <Link to={`/movie/${movie.id}`}>
                     {
@@ -36,6 +36,7 @@ const Movie: React.FC<MovieProps> = ({ movie }) => {
                     </div>
 
                     <div className="other-details">
+
                         <RatingIcon rating={movie.vote_average || 0} />
 
                         <span>{new Date(movie.release_date).toLocaleDateString(undefined, { year: 'numeric' })}</span>

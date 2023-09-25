@@ -2,7 +2,7 @@ import React from 'react'
 import { MovieType } from '../../../types/movie';
 import MovieProfile from '../../movie/MovieProfile';
 
-const Favorite: React.FC<{ movies: MovieType[] }> = ({ movies }) => {
+const Favorites: React.FC<{ movies: MovieType[] }> = ({ movies }) => {
     return (
         <div className="favorites-section">
             {movies.length > 0 ? <h3>Favorites</h3> : <h3> No Movies</h3>}
@@ -14,4 +14,4 @@ const Favorite: React.FC<{ movies: MovieType[] }> = ({ movies }) => {
     );
 }
 
-export default Favorite;
+export default Favorites;

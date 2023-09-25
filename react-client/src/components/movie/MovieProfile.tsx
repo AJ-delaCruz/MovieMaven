@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { MovieType } from "../../types/movie";
 import MovieMenu from "./MovieMenu";
-import RatingIcon from "./RatingIcon";
+import RatingIcon from "../rating/RatingIcon";
 
 interface MovieProps {
     movie: MovieType;
