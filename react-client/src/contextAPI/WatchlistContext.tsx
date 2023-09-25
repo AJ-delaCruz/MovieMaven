@@ -4,9 +4,11 @@ import axios, { AxiosError } from "axios";
 import { MovieType } from "../types/movie";
 
 type WatchlistContextType = {
-    watchlist: Record<number, boolean>;
-    // setWatchlist: (watchlist: Record<number, boolean>) => void; //encapsulate in functions to handle state management
-    addToWatchlist: (movieId: number) => void;
+    watchlist: MovieType[];
+    // setWatchlist: MovieType[] => void; //encapsulate in functions to handle state management
+    watchlistMovieIds: Record<number, boolean>;
+    addToWatchlist: (movie: MovieType) => void;
+
     removeFromWatchlist: (movieId: number) => void;
     fetchWatchlist: () => void;
 };
@@ -30,14 +32,17 @@ interface WatchlistProviderProps {
 }
 
 export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }) => {
-    const initialRatings = JSON.parse(localStorage.getItem('watchlist') || '{}');
-    const [watchlist, setWatchlist] = useState<Record<number, boolean>>(initialRatings);
+    const initialMovieIds = JSON.parse(localStorage.getItem('watchlist') || '{}');
+    const [watchlistMovieIds, setWatchlistMovieIds] = useState<Record<number, boolean>>(initialMovieIds);
+    const [watchlist, setWatchlist] = useState<MovieType[]>([]);
 
-    const addToWatchlist = async (movieId: number) => {
+    // const addToWatchlist = async (movieId: number) => {
+    const addToWatchlist = async (movie: MovieType) => {
+
         try {
             const response = await axios.post(`${backendUrl}/api/user/watchlist/add`, null, {
                 params: {
-                    tmdbId: movieId
+                    tmdbId: movie.id
                 },
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -45,15 +50,13 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
 
             });
             console.log(response); //check if movie is added to watchlist
-            setWatchlist(prevState => ({ //update watchlist state
-                ...prevState,
-                [movieId]: true,
-            }));
 
+            setWatchlist(prevState => [...prevState, movie]); //update watchlist state
+            setWatchlistMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
         } catch (error) {
-            const err = error as AxiosError;
+            const err = error as AxiosError; //todo UI error
             console.log(err.response?.data);
-            console.error("Failed to add movie to watchlist: " + movieId, error);
+            console.error("Failed to add movie to watchlist: " + movie.id, error);
         }
 
     };
@@ -67,10 +70,12 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
             });
 
             console.log(response);
-            setWatchlist(prevState => {
+
+            setWatchlist(prevState => prevState.filter(movie => movie.id !== movieId)); //update state
+            setWatchlistMovieIds(prevState => {
                 const newState = { ...prevState };
                 delete newState[movieId]; //delete key movieid property from watchlist object
-                return newState; //callback
+                return newState;
             });
         } catch (error) {
             console.error("Failed to remove favorite from movie: ", movieId, error);
@@ -86,27 +91,29 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
                 }
             });
             console.log(data);
-            //save movie ids as true
-            const watchlist: Record<number, boolean> = {};
 
-            data.forEach((movieObj: MovieType) => {
-                watchlist[movieObj.id] = true;
+            //save movie ids as true
+            const movieIds: Record<number, boolean> = {};
+            data.forEach((movie: MovieType) => {
+                movieIds[movie.id] = true;
             });
 
-            setWatchlist(watchlist);
+            setWatchlistMovieIds(movieIds);
+            setWatchlist(data); //retrieve up to date data from backend
 
         } catch (err) {
             console.log(err);
         }
     };
 
-    useEffect(() => {
-        localStorage.setItem('watchlist', JSON.stringify(watchlist));
-    }, [watchlist]);
 
+
+    useEffect(() => {
+        localStorage.setItem('watchlist', JSON.stringify(watchlistMovieIds));
+    }, [watchlistMovieIds]);
 
     return (
-        <WatchlistContext.Provider value={{ watchlist, addToWatchlist, removeFromWatchlist, fetchWatchlist }}>
+        <WatchlistContext.Provider value={{ watchlist, watchlistMovieIds, addToWatchlist, removeFromWatchlist, fetchWatchlist }}>
             {children}
         </WatchlistContext.Provider>
     );

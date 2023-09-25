@@ -5,13 +5,14 @@ import { MovieType } from "../types/movie";
 
 
 type FavoritesContextType = {
-    favorites: Record<number, boolean>; // object type-> key: movieId, value: boolean indicating favorited status
+    favorites: MovieType[];
+    favoritesMovieIds: Record<number, boolean>; // object type-> key: movieId, value: boolean indicating favorited status
     // setFavorites: (favorites: Record<number, boolean>) => void; //encapsulate in functions
-    addFavorite: (movieId: number) => void;
+
+    addFavorite: (movie: MovieType) => void;
     removeFavorite: (movieId: number) => void;
     fetchFavorites: () => void;
 };
-
 
 // context object
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
@@ -25,7 +26,6 @@ export const useFavoritesContext = () => {
     return context;
 };
 
-
 // define the prop types for FavoritesProvider
 interface FavoritesProviderProps {
     children: ReactNode; // accept type that can be rendered in React
@@ -33,23 +33,26 @@ interface FavoritesProviderProps {
 
 
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
-    const initialFavorites = JSON.parse(localStorage.getItem('favorites') || '{}');
-    const [favorites, setFavorites] = useState<Record<number, boolean>>(initialFavorites);
+    const initialMovieIds = JSON.parse(localStorage.getItem('favorites') || '{}');
+    const [favoritesMovieIds, setFavoritesMovieIds] = useState<Record<number, boolean>>(initialMovieIds);
+    const [favorites, setFavorites] = useState<MovieType[]>([]);
 
-    const addFavorite = async (movieId: number) => {
+    const addFavorite = async (movie: MovieType) => {
         try {
-            const response = await axios.post(`${backendUrl}/api/favorite/add/${movieId}`, null, { //not using req.body
+            const response = await axios.post(`${backendUrl}/api/favorite/add/${movie.id}`, null, {//not using req.body
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }
             });
+
             console.log(response); //check if movie is added
-            setFavorites(prevFavorites => ({ ...prevFavorites, [movieId]: true }));
+            setFavorites(prevFavorites => [...prevFavorites, movie]);
+            setFavoritesMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
 
         } catch (error) {
             const err = error as AxiosError;
             console.log(err.response?.data);
-            console.error("Failed to add movie to favorites: " + movieId, error);
+            console.error("Failed to add movie to favorites: " + movie.id, error);
         }
     };
 
@@ -62,7 +65,9 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             });
 
             console.log(response);
-            setFavorites(prevFavorites => {
+
+            setFavorites(prevState => prevState.filter(movie => movie.id !== movieId));
+            setFavoritesMovieIds(prevFavorites => {
                 const updatedFavorites = { ...prevFavorites };
                 delete updatedFavorites[movieId]; //delete key movieid property from favorites object
                 return updatedFavorites; //callback
@@ -81,16 +86,17 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
+
             console.log(data);
             //save movie ids as true
-            const favoriteMovies: Record<number, boolean> = {};
-            
+            const favoriteMoviesIds: Record<number, boolean> = {};
+
             data.forEach((movieObj: MovieType) => {
-                favoriteMovies[movieObj.id] = true;
+                favoriteMoviesIds[movieObj.id] = true;
             });
 
-            setFavorites(favoriteMovies);
-
+            setFavoritesMovieIds(favoriteMoviesIds);
+            setFavorites(data);
 
         } catch (err) {
             console.log(err);
@@ -98,13 +104,12 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     };
 
     useEffect(() => {
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-    }, [favorites]);
+        localStorage.setItem('favorites', JSON.stringify(favoritesMovieIds));
+    }, [favoritesMovieIds]);
 
     return (
-        <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, fetchFavorites }}>
+        <FavoritesContext.Provider value={{ favorites, favoritesMovieIds, addFavorite, removeFavorite, fetchFavorites }}>
             {children}
         </FavoritesContext.Provider>
     );
 };
-

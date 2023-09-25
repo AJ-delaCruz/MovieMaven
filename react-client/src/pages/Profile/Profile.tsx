@@ -4,24 +4,26 @@ import axios from "axios";
 import { backendUrl } from "../../utils/config";
 import { CircularProgress } from "@mui/material";
 import { UserType } from "../../types/user";
-import { MovieType } from "../../types/movie";
 import Tab from "../../components/user/tab/Tab";
 import ProfileDetails from "../../components/user/profile/ProfileDetails";
+import { useWatchlistContext } from "../../contextAPI/WatchlistContext";
+import { useRatingsContext } from "../../contextAPI/RatingsContext";
+import { useFavoritesContext } from "../../contextAPI/FavoritesContext";
 
 const Profile = () => {
     const [user, setUser] = useState<UserType | null>(null);
     const { currentUser } = useAuthContext(); //access auth context shared state
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [favorites, setFavorites] = useState<MovieType[]>([]);
-    const [watchlist, setWatchlist] = useState<MovieType[]>([]);
-    const [ratings, setRatings] = useState<MovieType[]>([]);
+    const { favorites, fetchFavorites } = useFavoritesContext();
+    const { ratedMovies, fetchRatings } = useRatingsContext();
+    const { watchlist, fetchWatchlist } = useWatchlistContext();
 
     const getUser = async () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${backendUrl}/api/user`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${currentUser}`
                 }
             });
             console.log(response.data);
@@ -33,70 +35,16 @@ const Profile = () => {
         }
     };
 
-    const getFavorites = async () => {
-        setIsLoading(true);
-        try {
-            const response = await axios.get(`${backendUrl}/api/favorite`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            console.log(response.data);
-            setFavorites(response.data);
-            // setFavorites(response.data.map((movie: MovieType) => ({ ...movie, id: movie.tmdb_id })));
-
-        } catch (error) {
-            console.error("Failed to retrieve favorite movies:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const getWatchlist = async () => {
-        setIsLoading(true);
-        try {
-            const response = await axios.get(`${backendUrl}/api/user/watchlist`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            console.log(response.data);
-            setWatchlist(response.data);
-
-        } catch (error) {
-            console.error("Failed to retrieve watchlist:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const getRatedMovies = async () => {
-        // setIsLoading(true);
-        try {
-            const response = await axios.get(`${backendUrl}/api/rating/movie/rated`, {
-                headers: {
-                    'Authorization': `Bearer ${currentUser}`
-                }
-            });
-            console.log(response.data);
-            setRatings(response.data);
-
-        } catch (error) {
-            console.error("Failed to retrieve rated movies:", error);
-        }
-        // finally {
-        //     setIsLoading(false);
-        // }
-    };
-
 
     useEffect(() => {
 
         getUser();
-        getFavorites();
-        getWatchlist();
-        getRatedMovies();
+    
+        fetchWatchlist(); // Fetch movies using the context api
+        fetchFavorites();
+        fetchRatings();
     }, []);
+
 
 
     if (isLoading || user == null) {
@@ -110,9 +58,9 @@ const Profile = () => {
 
 
     return (
-        <div className="user-profile">
+        <div id="tab-content" className="user-profile">
             <ProfileDetails user={user} />
-            <Tab favorites={favorites} watchlist={watchlist} ratings={ratings} />
+            <Tab favorites={favorites} watchlist={watchlist} ratings={ratedMovies} />
 
 
         </div>

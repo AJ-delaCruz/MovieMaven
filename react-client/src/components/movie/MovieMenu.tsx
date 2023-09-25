@@ -20,9 +20,9 @@ interface MovieMenuProps {
 const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     // console.log("Rendering MovieMenu for movie:", movie.title);
     const { ratings, addOrUpdateRating } = useRatingsContext();
-    const ratedMovies = ratings[movie.id] || 0;
-    const { favorites, addFavorite, removeFavorite } = useFavoritesContext();
-    const { watchlist, addToWatchlist, removeFromWatchlist } = useWatchlistContext();
+    const userRating = ratings[movie.id] || 0;
+    const { favoritesMovieIds, addFavorite, removeFavorite } = useFavoritesContext();
+    const { watchlistMovieIds, addToWatchlist, removeFromWatchlist } = useWatchlistContext();
 
     //menu item for adding to watchlist or favorite
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -51,22 +51,24 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     }
 
     //  add/remove movie to watchlist
-    const handleWatchlistToggle = async (movieId: number) => {
-        if (watchlist[movie.id]) {
-            removeFromWatchlist(movieId);
+    const handleWatchlistToggle = async (movie: MovieType) => {
+        if (watchlistMovieIds[movie.id]) {
+            removeFromWatchlist(movie.id);
         } else {
-            addToWatchlist(movieId);
+            addToWatchlist(movie);
         }
         //  handleCloseMenu();
     };
 
 
+
+
     // add/remove movie to favorites
-    const handleFavoriteToggle = async (movieId: number) => {
-        if (favorites[movie.id]) {
-            removeFavorite(movieId);
+    const handleFavoriteToggle = async (movie: MovieType) => {
+        if (favoritesMovieIds[movie.id]) {
+            removeFavorite(movie.id);
         } else {
-            addFavorite(movieId);
+            addFavorite(movie);
         }
         // handleCloseMenu();
     };
@@ -75,7 +77,7 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
     //add rating
     const handleRatingChange = async (newRating: number) => {
         //rating context api
-        addOrUpdateRating(movie.id, newRating);
+        addOrUpdateRating(movie, newRating);
 
         // closeRatingModal();  // close the modal once rating is set
     };
@@ -90,9 +92,9 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
 
                 {/* add to watchlist */}
-                <MenuItem onClick={() => handleWatchlistToggle(movie.id)}>
+                <MenuItem onClick={() => handleWatchlistToggle(movie)}>
                     <ListItemIcon>
-                        {watchlist[movie.id]
+                        {watchlistMovieIds[movie.id]
                             ? <BookmarkRemoveIcon fontSize="small" style={{ color: "blue" }} />
                             : <BookmarkIcon fontSize="small" />
                         }
@@ -100,13 +102,12 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                     <ListItemText primary="Watchlist" />
                 </MenuItem>
 
-
                 {/* add to favorite */}
                 <MenuItem
-                    onClick={() => handleFavoriteToggle(movie.id)}
+                    onClick={() => handleFavoriteToggle(movie)}
                 >
                     <ListItemIcon>
-                        <FavoriteIcon fontSize="small" style={{ color: favorites[movie.id] ? "red" : "inherit" }}
+                        <FavoriteIcon fontSize="small" style={{ color: favoritesMovieIds[movie.id] ? "red" : "inherit" }}
                         />
                     </ListItemIcon>
                     <ListItemText primary="Favorite" />
@@ -118,7 +119,7 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                     onClick={openRatingModal}
                 >
                     <ListItemIcon>
-                        <StarIcon fontSize="medium" style={{ color: ratedMovies > 0 ? "gold" : "inherit", marginLeft: '-2px' }} />
+                        <StarIcon fontSize="medium" style={{ color: userRating > 0 ? "gold" : "inherit", marginLeft: '-2px' }} />
                     </ListItemIcon>
                     <ListItemText primary="Rating" />
                 </MenuItem>
@@ -154,7 +155,7 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
                     }}
                 >
                     {/* <Typography sx={{ marginLeft: '10px' }} variant="h6">Rate movie</Typography> */}
-                    <Rating currentRating={ratedMovies} onRatingChange={handleRatingChange} movieId={movie.id} />
+                    <Rating currentRating={userRating} onRatingChange={handleRatingChange} movieId={movie.id} />
 
                 </Box>
 

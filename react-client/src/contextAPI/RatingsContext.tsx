@@ -1,22 +1,21 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { backendUrl } from "../utils/config";
-import axios from "axios";
-
+import axios, { AxiosError } from "axios";
+import { MovieType } from "../types/movie";
+import { RatingType } from "../types/rating";
 
 type RatingsContextType = {
-    ratings: Record<number, number>; // key: movieId, value: ratingValue
+    ratedMovies: MovieType[];
+    ratings: Record<number, number>;  // MovieID -> RatingValue
     // setRatings: (ratings: Record<number, number>) => void; //encapsulate in functions
-    addOrUpdateRating: (movieId: number, ratingValue: number) => void;
-    removeRating: (movieId: number) => void;
-    fetchRatings: () => {}
 
+    addOrUpdateRating: (movie: MovieType, ratingValue: number) => void;
+    removeRating: (movieId: number) => void;
+    fetchRatings: () => void;
 };
 
-
-// context object
 const RatingsContext = createContext<RatingsContextType | undefined>(undefined);
 
-//custom hook 
 export const useRatingsContext = () => {
     const context = useContext(RatingsContext);
     if (!context) {
@@ -25,93 +24,95 @@ export const useRatingsContext = () => {
     return context;
 };
 
-// define the prop types for RatingsProvider
 interface RatingsProviderProps {
-    children: ReactNode; // accept type that can be rendered in React
+    children: ReactNode;
 }
 
-
-
 export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) => {
-    // const [ratings, setRatings] = useState<Record<number, number>>({});
-    const initialRatings = JSON.parse(localStorage.getItem('ratings') || '{}');
-    const [ratings, setRatings] = useState<Record<number, number>>(initialRatings);
+    const [ratedMovies, setRatedMovies] = useState<MovieType[]>([]);
+    const [ratings, setRatings] = useState<Record<number, number>>(JSON.parse(localStorage.getItem('ratings') || '{}'));
 
-
-    const addOrUpdateRating = async (movieId: number, ratingValue: number) => {
+    const addOrUpdateRating = async (movie: MovieType, ratingValue: number) => {
         try {
-            const response = await axios.post(`${backendUrl}/api/rating/${movieId}`, ratingValue, {
+            const response = await axios.post(`${backendUrl}/api/rating/${movie.id}`, ratingValue, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                     'Content-Type': 'application/json'
                 }
             });
             console.log(response);
-            setRatings(currRatings => ({
-                ...currRatings,
-                [movieId]: ratingValue
+
+            //update rated movies state if it doesn't exist in case of updating rating
+            setRatedMovies(prevState => {
+                if (!prevState.some(m => m.id === movie.id)) { //add movie if doesn't exist yet
+                    return [...prevState, movie];
+                }
+                return prevState;
+            });
+
+            setRatings(prevRatings => ({ //update user rating
+                ...prevRatings,
+                [movie.id]: ratingValue
             }));
         } catch (error) {
-            console.error("Failed to add or update rating: ", error);
+            const err = error as AxiosError;
+            console.log(err.response?.data);
+            console.error("Failed to add or update rating for movie: " + movie.id, error);
         }
     };
 
     const removeRating = async (movieId: number) => {
-        console.log(movieId);
         try {
             const response = await axios.delete(`${backendUrl}/api/rating/${movieId}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token")}`,
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
                 }
             });
-
             console.log(response);
+
+
+            setRatedMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));//update state
             setRatings(prevRatings => {
-                const updatedRatings = { ...prevRatings };
-                delete updatedRatings[movieId]; //delete key movieid property from rating object
-                return updatedRatings;
+                const newRatings = { ...prevRatings };
+                delete newRatings[movieId]; //delete key movieid property from rating object
+                return newRatings;
             });
-
         } catch (error) {
-            console.error("Failed to remove rating: ", error);
+            console.error("Failed to remove rating for movie: ", movieId, error);
         }
-
-    }
-
+    };
 
     const fetchRatings = async () => {
-
         try {
-            // Fetch ratings for the current user
             const { data } = await axios.get(`${backendUrl}/api/rating/user`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            // console.log("ratings");
-            // console.log(data);
+            console.log("ratings");
+            console.log(data);
 
-            // Process and save ratings data
+
+            //store ratings of each movie rated
             const userRatings: Record<number, number> = {};
-
-            data.forEach((rating: any) => {
-                userRatings[rating.movie.tmdb_id] = rating.rating_value;
+            data.forEach((movie: RatingType) => {
+                userRatings[movie.id] = movie.user_rating;
             });
-            // Save to context and local storage
+
             setRatings(userRatings);
-            // localStorage.setItem('ratings', JSON.stringify(userRatings));
+            setRatedMovies(data);
 
         } catch (err) {
             console.log(err);
         }
-    }
+    };
+
     useEffect(() => {
         localStorage.setItem('ratings', JSON.stringify(ratings));
     }, [ratings]);
 
-
     return (
-        <RatingsContext.Provider value={{ ratings, fetchRatings, addOrUpdateRating, removeRating }}>
+        <RatingsContext.Provider value={{ ratedMovies, ratings, addOrUpdateRating, removeRating, fetchRatings }}>
             {children}
         </RatingsContext.Provider>
     );
