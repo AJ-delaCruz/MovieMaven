@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
     IconButton, Badge, ListItemText, Menu, MenuItem, ListItemIcon
 } from '@mui/material';
@@ -13,6 +13,10 @@ import Person from '@mui/icons-material/Person';
 import { useAuthContext } from '../../contextAPI/AuthContext';
 import SearchBar from '../search/SearchBar';
 import "./navbar.scss";
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import StarIcon from '@mui/icons-material/Star';
+import { useProfileContext } from '../../contextAPI/ProfileContext';
 
 type NotificationEvent = {
     message: string;
@@ -21,6 +25,8 @@ type NotificationEvent = {
 const Navbar: React.FC = () => {
     const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
     const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
+    const { setActiveTab } = useProfileContext(); //tabs
+    const location = useLocation();
 
     const { logout } = useAuthContext();
     // const { notificationCount, notificationEvents, markAsRead, markAllAsRead } = useContext(NotificationContext); //TODO
@@ -61,8 +67,35 @@ const Navbar: React.FC = () => {
         // markAsRead(index);
     };
 
+
+
+    const navbarRef = useRef<HTMLDivElement | null>(null);
+
+    //scroll to the top of the user-profile when clicking favorites/watchlist/ratings icons
+    const scrollToContent = () => {
+        const contentElement = document.getElementById("tab-content");
+        const navbarHeight = navbarRef.current ? navbarRef.current.offsetHeight : 0;
+
+        if (contentElement) {
+            window.scroll({
+                top: contentElement.offsetTop - navbarHeight, //account for navbar's height (sticky)
+                behavior: "smooth"
+            });
+        }
+    };
+
+    //navigate to profile page based on tab chosen
+    const handleTabClick = (tab: 'favorites' | 'watchlist' | 'ratings') => {
+        setActiveTab(tab);
+        // console.log(location.pathname);
+        if (location.pathname !== "/profile") {
+            navigate('/profile');
+        }
+        scrollToContent();
+    };
+
     return (
-        <div className="navbar">
+        <div className="navbar" ref={navbarRef}>
 
             <div className="left">
                 <Link to="/" style={{ textDecoration: "none" }}>
@@ -77,6 +110,22 @@ const Navbar: React.FC = () => {
             </div>
 
             <div className="right">
+
+                {/* watchlist */}
+                <IconButton size='large' onClick={() => handleTabClick('watchlist')}>
+                    <BookmarkIcon fontSize="medium" />
+                </IconButton>
+
+
+                {/* favorite movies*/}
+                <IconButton size='large' onClick={() => handleTabClick('favorites')}>
+                    <FavoriteIcon fontSize="medium" />
+                </IconButton>
+
+                {/* Rating movies  */}
+                <IconButton size='large' onClick={() => handleTabClick('ratings')}>
+                    <StarIcon fontSize="inherit" />
+                </IconButton>
 
                 <IconButton color="inherit" onClick={handleNotificationIconMenuClick}>
                     {/* <Badge badgeContent={notificationCount} color="primary" > */}

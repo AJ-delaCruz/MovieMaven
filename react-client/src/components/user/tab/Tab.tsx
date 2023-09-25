@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { MovieType } from "../../../types/movie";
 import WatchList from "../watchlist/WatchList";
 import Favorites from "../favorite/Favorites";
 import RatedMovies from "../rating/RatedMovies";
+import { useProfileContext } from "../../../contextAPI/ProfileContext";
 
 const Tab: React.FC<{ favorites: MovieType[], watchlist: MovieType[], ratings: MovieType[] }> = ({ favorites, watchlist, ratings }) => {
-    const [activeTab, setActiveTab] = useState<'favorites' | 'watchlist' | 'ratings' | null>('favorites');
+    // const [activeTab, setActiveTab] = useState<'favorites' | 'watchlist' | 'ratings' | null>('favorites');
+    const { activeTab, setActiveTab } = useProfileContext();
 
     return (
         <div>
