@@ -6,6 +6,7 @@ import { AuthProvider } from './contextAPI/AuthContext';
 import { RatingsProvider } from './contextAPI/RatingsContext';
 import { FavoritesProvider } from './contextAPI/FavoritesContext';
 import { WatchlistProvider } from './contextAPI/WatchlistContext';
+import { ProfileProvider } from './contextAPI/ProfileContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,7 +18,9 @@ root.render(
       <FavoritesProvider>
         <WatchlistProvider>
           <AuthProvider>
-            <App />
+            <ProfileProvider>
+              <App />
+            </ProfileProvider>
           </AuthProvider>
         </WatchlistProvider>
       </FavoritesProvider>
