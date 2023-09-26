@@ -1,10 +1,13 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { backendUrl } from '../../utils/config';
 import { MovieType } from '../../types/movie';
 import { useState, useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
 import './movie-details.scss';
+import FavoriteButton from '../user/favorite/FavoriteButton';
+import RatingButton from '../user/rating/RatingButton';
+import WatchlistButton from '../user/watchlist/WatchlistButton';
 
 
 const MovieDetails: React.FC = () => {
@@ -12,6 +15,14 @@ const MovieDetails: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const { tmdbId } = useParams<{ tmdbId: string }>();
 
+    const [ratingAnchor, setRatingAnchor] = useState<null | HTMLElement>(null);
+    const openRatingModal = (e: React.MouseEvent<HTMLElement>) => {
+        setRatingAnchor(e.currentTarget);
+    };
+
+    const closeRatingModal = () => {
+        setRatingAnchor(null);
+    };
     // const location = useLocation();
     // console.log(location.pathname);
 
@@ -19,10 +30,12 @@ const MovieDetails: React.FC = () => {
         const getMovieDetails = async () => {
             try {
                 const response = await axios.get(`${backendUrl}/api/tmdb/movie/${tmdbId}`);
-                // console.log('RESPONSE');
-                // console.log(response.data);
-                setMovie(response.data);
 
+                const movieData = response.data;
+                movieData.id = movieData.tmdb_id; //Convert tmdb_id to id. ID is null for movie details
+                setMovie(movieData);
+                // setMovie(response.data);
+                console.log(movieData);
 
             } catch (err) {
                 console.error('Failed to fetch movie details:', err);
@@ -54,6 +67,21 @@ const MovieDetails: React.FC = () => {
                 </div>
                 <div className="details-container">
                     {movie.tagline && <p className="tagline"><em>{movie.tagline}</em></p>}
+
+                    <div style={{ display: 'flex' }}>
+                        <FavoriteButton movie={movie} />
+
+                        <WatchlistButton movie={movie} />
+
+                        <RatingButton
+                            movie={movie}
+                            isRatingPopoverOpen={Boolean(ratingAnchor)}
+                            ratingAnchorEl={ratingAnchor}
+                            onRatingPopoverClose={closeRatingModal}
+                            onRatingPopoverOpen={openRatingModal}
+                        />
+
+                    </div>
                     <p><strong className="description-label">Description:</strong></p>
                     <p className="description">{movie.overview}</p>
                     <div className="quick-details">

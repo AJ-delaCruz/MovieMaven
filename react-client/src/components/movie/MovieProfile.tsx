@@ -1,13 +1,29 @@
 import { Link } from "react-router-dom";
 import { MovieType } from "../../types/movie";
-import MovieMenu from "./MovieMenu";
 import RatingIcon from "../rating/RatingIcon";
+import RatingButton from "../user/rating/RatingButton";
+import { useState } from "react";
+import { useProfileContext } from "../../contextAPI/ProfileContext";
+import WatchlistButton from "../user/watchlist/WatchlistButton";
+import FavoriteButton from "../user/favorite/FavoriteButton";
+import DeleteMovieButton from "../user/delete/DeleteMovieButton";
 
 interface MovieProps {
     movie: MovieType;
 }
 
 const MovieProfile: React.FC<MovieProps> = ({ movie }) => {
+    const [ratingAnchor, setRatingAnchor] = useState<null | HTMLElement>(null);
+    const { activeTab } = useProfileContext();
+
+    const openRatingModal = (e: React.MouseEvent<HTMLElement>) => {
+        setRatingAnchor(e.currentTarget);
+    };
+
+    const closeRatingModal = () => {
+        setRatingAnchor(null);
+    };
+
     return (
         <div className="profile-movie">
             <Link to={`/movie/${movie.id}`}>
@@ -24,12 +40,35 @@ const MovieProfile: React.FC<MovieProps> = ({ movie }) => {
                 </div>
                 <RatingIcon rating={movie.vote_average || 0} />
                 <p>{movie.overview}</p>
+
+
+
+                <div style={{ display: 'flex', marginTop: '30px' }}>
+                    <FavoriteButton movie={movie} />
+
+                    <WatchlistButton movie={movie} />
+
+                    <RatingButton
+                        movie={movie}
+                        isRatingPopoverOpen={Boolean(ratingAnchor)}
+                        ratingAnchorEl={ratingAnchor}
+                        onRatingPopoverClose={closeRatingModal}
+                        onRatingPopoverOpen={openRatingModal}
+                    />
+
+                </div>
+
             </div>
+
+
             <div>
-                <MovieMenu movie={movie} />
+                <DeleteMovieButton movie={movie} tabType={activeTab} />
             </div>
+
         </div>
     );
 }
 
 export default MovieProfile;
+
+
