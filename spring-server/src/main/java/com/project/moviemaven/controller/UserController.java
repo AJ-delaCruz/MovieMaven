@@ -57,16 +57,16 @@ public class UserController {
         String username = principal.getName();
 
         // use snake_case (current_password)
-        userService.updatePassword(username, passwordRequest);
+        userService.updatePassword(passwordRequest, username);
         return ResponseEntity.ok("Password is updated successfully");
     }
 
     // for the user to delete their own account
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteAccount(Principal principal) {
-        User currentUser = userService.getUserByUsername(principal.getName());
+    public ResponseEntity<String> deleteAccount(@RequestBody PasswordRequest passwordRequest, Principal principal) {
+        String username = principal.getName();
 
-        userService.deleteUser(currentUser.getId());
+        userService.deleteAccount(passwordRequest, username);
         return ResponseEntity.ok("Your account has been successfully deleted.");
     }
 
@@ -74,7 +74,7 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
-        userService.deleteUser(userId);
+        userService.deleteUserByAdmin(userId);
         return ResponseEntity.ok("User " + userId + " is successfully deleted.");
     }
 }

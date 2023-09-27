@@ -68,7 +68,7 @@ public class UserService implements UserDetailsService {
     }
 
     // update user's passwrod
-    public User updatePassword(String username, PasswordRequest passwordRequest) {
+    public User updatePassword(PasswordRequest passwordRequest, String username) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
         User user = userRepository.findByUsername(username)
@@ -85,8 +85,22 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    public void deleteAccount(PasswordRequest passwordRequest, String username) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        // check password for verification
+        if (!passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
+            // use snake_case (current_password)
+            throw new IllegalArgumentException("Password is incorrect");
+        }
+
+        userRepository.delete(user);
+    }
+
     // delete user by ID
-    public void deleteUser(Long userId) {
+    public void deleteUserByAdmin(Long userId) {
         User user = getUserById(userId);
         userRepository.delete(user);
     }
