@@ -50,9 +50,12 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String username;
     @JsonIgnore
     private String password;
+
+    private String fullName;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -84,11 +87,13 @@ public class User implements UserDetails {
     private Set<Movie> favorites = new LinkedHashSet<>();
     // private List<Movie> favorites = new ArrayList<>();
 
+    @ToString.Exclude
     @JsonIgnore
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true) // fetch = FetchType.EAGER)
     private List<Rating> ratings = new ArrayList<>();
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

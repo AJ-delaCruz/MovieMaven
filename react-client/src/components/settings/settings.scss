@@ -1,0 +1,43 @@
+.sidebar {
+
+    //drawer box
+    .MuiDrawer-paper {
+        width: 200px;
+        height: calc(100% - 835px);
+        top: 122px;
+        left: 112px;
+        box-sizing: border-box;
+        background: #111; // darker than #181818
+        color: #fff; // for bright text
+        border-radius: 6px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .header {
+        padding: 16px;
+        border-bottom: 1px solid #333;
+        background: #253877;
+        color: #fff;
+
+        h6 {
+            color: inherit;
+        }
+    }
+
+
+    .MuiListItemButton-root {
+        &:hover {
+            background: #1f1f1f;
+            color: #1e88e5;
+        }
+
+        &.Mui-selected {
+            color: #1e88e5;
+            background: #222;
+
+            &:hover {
+                background: #333;
+            }
+        }
+    }
+}
