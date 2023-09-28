@@ -16,6 +16,12 @@ import Profile from './pages/Profile/Profile';
 import Homepage from './pages/Homepage/Homepage';
 import SearchResult from './pages/Search/SearchResult';
 import './App.scss';
+import SettingsPage from './pages/settings/SettingsPage';
+import ProfileSettings from './components/settings/ProfileSettings';
+import DeleteAccount from './components/settings/DeleteAccount';
+import Preferences from './components/settings/Preferences';
+import Notification from './components/settings/Notification';
+import EditPassword from './components/settings/EditPassword';
 const App: React.FC = () => {
 
   // Define the type for children prop
@@ -36,6 +42,30 @@ const App: React.FC = () => {
       </div>
     );
   };
+
+  //layout for settings
+const SettingsLayout: React.FC = () => {
+    return (
+      <div className="layout-container">
+        <Navbar />
+
+        <div className="settings-wrapper">
+          <div className="sidebar-container">
+            <SettingsPage />
+          </div>
+
+          <div className="settings-content">
+            <div className="settings-inner">
+              <Outlet />
+            </div>
+          </div>
+        </div>
+
+        <Footer />
+      </div>
+    );
+  };
+
 
 
   //client-side auth
@@ -79,9 +109,40 @@ const App: React.FC = () => {
           path: "/search-results",
           element: <SearchResult />,
         },
-
       ],
     },
+    {
+      //settings router
+      path: "/settings",
+      element: (
+        <ProtectedRoute>
+          <SettingsLayout />
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "/settings/profile",
+          element: <ProfileSettings />,
+        },
+        {
+          path: "/settings/profile/password-change",
+          element: <EditPassword />,
+        },
+        {
+          path: "/settings/preferences",
+          element: <Preferences />,
+        },
+        {
+          path: "/settings/notification",
+          element: <Notification />,
+        },
+        {
+          path: "/settings/delete",
+          element: <DeleteAccount />,
+        }
+      ],
+    },
+
     {
       path: "/login",
       element: <Login />,

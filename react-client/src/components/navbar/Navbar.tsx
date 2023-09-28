@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
 
     const handleSettings = () => {
         handleClose();
-        navigate('/settings');
+        navigate('/settings/profile');
     };
 
     const handleNotificationClick = (index: number) => {
@@ -111,15 +111,14 @@ const Navbar: React.FC = () => {
 
             <div className="right">
 
-                {/* watchlist */}
-                <IconButton size='large' onClick={() => handleTabClick('watchlist')}>
-                    <BookmarkIcon fontSize="medium" />
-                </IconButton>
-
-
                 {/* favorite movies*/}
                 <IconButton size='large' onClick={() => handleTabClick('favorites')}>
                     <FavoriteIcon fontSize="medium" />
+                </IconButton>
+
+                {/* watchlist */}
+                <IconButton size='large' onClick={() => handleTabClick('watchlist')}>
+                    <BookmarkIcon fontSize="medium" />
                 </IconButton>
 
                 {/* Rating movies  */}

@@ -12,3 +12,34 @@
   background-color: #181818; // slightly darker than the navbar and footer 
   color: #e0e0e0; // light text for contrast
 }
+
+
+
+
+.settings-wrapper {
+  display: flex;
+  flex: 1 0 auto;
+}
+
+.sidebar-container {
+  width: 300px; //push setting-content to right
+  background-color: #181818;
+}
+
+.settings-content {
+  flex: 1;
+  background-color: #181818;
+  color: #e0e0e0;
+  padding: 25px 40px;
+
+  .settings-inner {
+
+    background-color: #001524;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    height: 700px;
+  }
+
+}
+
