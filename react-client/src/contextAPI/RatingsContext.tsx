@@ -3,6 +3,7 @@ import { backendUrl } from "../utils/config";
 import axios, { AxiosError } from "axios";
 import { MovieType } from "../types/movie";
 import { RatingType } from "../types/rating";
+import { useSnackbarContext } from "./SnackBarAlertContext";
 
 type RatingsContextType = {
     ratedMovies: MovieType[];
@@ -31,6 +32,7 @@ interface RatingsProviderProps {
 export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) => {
     const [ratedMovies, setRatedMovies] = useState<MovieType[]>([]);
     const [ratings, setRatings] = useState<Record<number, number>>(JSON.parse(localStorage.getItem('ratings') || '{}'));
+    const showSnackbar = useSnackbarContext();
 
     const addOrUpdateRating = async (movie: MovieType, ratingValue: number) => {
         try {
@@ -54,10 +56,15 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
                 ...prevRatings,
                 [movie.id]: ratingValue
             }));
+
+            showSnackbar("Successfully rated movie!", "success");
+
         } catch (error) {
             const err = error as AxiosError;
             console.log(err.response?.data);
             console.error("Failed to add or update rating for movie: " + movie.id, error);
+            showSnackbar("Failed to rate movie. Please try again.", "error");
+
         }
     };
 
@@ -77,8 +84,13 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
                 delete newRatings[movieId]; //delete key movieid property from rating object
                 return newRatings;
             });
+
+            showSnackbar("Rating successfully removed!", "success");
+
         } catch (error) {
             console.error("Failed to remove rating for movie: ", movieId, error);
+            showSnackbar("Failed to remove rating. Please try again.", "error");
+
         }
     };
 

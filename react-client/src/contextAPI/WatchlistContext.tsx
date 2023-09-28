@@ -2,6 +2,7 @@ import React, { ReactNode, createContext, useContext, useEffect, useState } from
 import { backendUrl } from "../utils/config";
 import axios, { AxiosError } from "axios";
 import { MovieType } from "../types/movie";
+import { useSnackbarContext } from "./SnackBarAlertContext";
 
 type WatchlistContextType = {
     watchlist: MovieType[];
@@ -35,6 +36,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
     const initialMovieIds = JSON.parse(localStorage.getItem('watchlist') || '{}');
     const [watchlistMovieIds, setWatchlistMovieIds] = useState<Record<number, boolean>>(initialMovieIds);
     const [watchlist, setWatchlist] = useState<MovieType[]>([]);
+    const showSnackbar = useSnackbarContext();
 
     // const addToWatchlist = async (movieId: number) => {
     const addToWatchlist = async (movie: MovieType) => {
@@ -53,10 +55,16 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
 
             setWatchlist(prevState => [...prevState, movie]); //update watchlist state
             setWatchlistMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
+
+            showSnackbar("Movie successfully added to watchlist!", "success");
+
         } catch (error) {
             const err = error as AxiosError; //todo UI error
             console.log(err.response?.data);
             console.error("Failed to add movie to watchlist: " + movie.id, error);
+
+            showSnackbar("Failed to add movie to watchlist. Please try again.", "error");
+
         }
 
     };
@@ -77,8 +85,13 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
                 delete newState[movieId]; //delete key movieid property from watchlist object
                 return newState;
             });
+
+            showSnackbar("Movie successfully removed from watchlist!", "success");
+
         } catch (error) {
             console.error("Failed to remove favorite from movie: ", movieId, error);
+            showSnackbar("Failed to remove movie from watchlist. Please try again.", "error");
+
         }
     };
 

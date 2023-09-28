@@ -2,6 +2,7 @@ import React, { ReactNode, createContext, useContext, useEffect, useState } from
 import { backendUrl } from "../utils/config";
 import axios, { AxiosError } from "axios";
 import { MovieType } from "../types/movie";
+import { useSnackbarContext } from "./SnackBarAlertContext";
 
 
 type FavoritesContextType = {
@@ -36,6 +37,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     const initialMovieIds = JSON.parse(localStorage.getItem('favorites') || '{}');
     const [favoritesMovieIds, setFavoritesMovieIds] = useState<Record<number, boolean>>(initialMovieIds);
     const [favorites, setFavorites] = useState<MovieType[]>([]);
+    const showSnackbar = useSnackbarContext();
 
     const addFavorite = async (movie: MovieType) => {
         try {
@@ -48,11 +50,14 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             console.log(response); //check if movie is added
             setFavorites(prevFavorites => [...prevFavorites, movie]);
             setFavoritesMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
-
+            // Show success snackbar
+            showSnackbar("Movie added to favorites successfully!", "success");
         } catch (error) {
             const err = error as AxiosError;
             console.log(err.response?.data);
             console.error("Failed to add movie to favorites: " + movie.id, error);
+            // Show error snackbar
+            showSnackbar("Failed to add movie to favorites. Please try again!", "error");
         }
     };
 
@@ -72,9 +77,12 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
                 delete updatedFavorites[movieId]; //delete key movieid property from favorites object
                 return updatedFavorites; //callback
             });
-
+            // Showing success snackbar
+            showSnackbar("Movie removed from favorites successfully!", "success");
         } catch (error) {
             console.error("Failed to remove favorite from movie: ", movieId, error);
+            // Showing error snackbar
+            showSnackbar("Failed to remove movie from favorites. Please try again.", "error");
         }
     };
 

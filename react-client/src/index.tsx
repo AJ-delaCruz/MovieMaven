@@ -7,6 +7,7 @@ import { RatingsProvider } from './contextAPI/RatingsContext';
 import { FavoritesProvider } from './contextAPI/FavoritesContext';
 import { WatchlistProvider } from './contextAPI/WatchlistContext';
 import { ProfileProvider } from './contextAPI/ProfileContext';
+import SnackbarProvider from './contextAPI/SnackBarAlertContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,17 +15,19 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
 
-    <RatingsProvider>
-      <FavoritesProvider>
-        <WatchlistProvider>
-          <AuthProvider>
-            <ProfileProvider>
-              <App />
-            </ProfileProvider>
-          </AuthProvider>
-        </WatchlistProvider>
-      </FavoritesProvider>
-    </RatingsProvider>
+    <SnackbarProvider>
+      <RatingsProvider>
+        <FavoritesProvider>
+          <WatchlistProvider>
+            <AuthProvider>
+              <ProfileProvider>
+                <App />
+              </ProfileProvider>
+            </AuthProvider>
+          </WatchlistProvider>
+        </FavoritesProvider>
+      </RatingsProvider>
+    </SnackbarProvider>
 
   </React.StrictMode>
 );
