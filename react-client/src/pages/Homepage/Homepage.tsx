@@ -8,7 +8,7 @@ const Homepage: React.FC = () => {
     const movieGenres = [
         { genre: "action", categoryName: "Action" },
         { genre: "comedy", categoryName: "Comedy" },
-        { genre: "romance", categoryName: "Romance Movies" },
+        { genre: "romance", categoryName: "Romance" },
         { genre: "science fiction", categoryName: "Science Fiction" },
         { genre: "drama", categoryName: "Drama" },
         { genre: "mystery", categoryName: "Mystery" },

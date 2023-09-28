@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+// import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Logout from '@mui/icons-material/Logout';
 import Settings from '@mui/icons-material/Settings';
 import Person from '@mui/icons-material/Person';
@@ -18,9 +18,9 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import StarIcon from '@mui/icons-material/Star';
 import { useProfileContext } from '../../contextAPI/ProfileContext';
 
-type NotificationEvent = {
-    message: string;
-};
+// type NotificationEvent = {//todo
+//     message: string;
+// };
 
 const Navbar: React.FC = () => {
     const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
@@ -63,9 +63,9 @@ const Navbar: React.FC = () => {
         navigate('/settings/profile');
     };
 
-    const handleNotificationClick = (index: number) => {
-        // markAsRead(index);
-    };
+    // const handleNotificationClick = (index: number) => {
+    //     // markAsRead(index);
+    // };
 
 
 
@@ -111,24 +111,49 @@ const Navbar: React.FC = () => {
 
             <div className="right">
 
-                {/* favorite movies*/}
-                <IconButton size='large' onClick={() => handleTabClick('favorites')}>
-                    <FavoriteIcon fontSize="medium" />
-                </IconButton>
 
-                {/* watchlist */}
-                <IconButton size='large' onClick={() => handleTabClick('watchlist')}>
-                    <BookmarkIcon fontSize="medium" />
-                </IconButton>
 
-                {/* Rating movies  */}
-                <IconButton size='large' onClick={() => handleTabClick('ratings')}>
-                    <StarIcon fontSize="inherit" />
-                </IconButton>
+                <div>
+                    {/* favorite movies*/}
+                    <IconButton
+                        size='large'
+                        onClick={() => handleTabClick('favorites')}
+                        sx={{
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
+                            }
+                        }}
+                    >
+                        <FavoriteIcon sx={{ color: 'red' }} fontSize="medium" />
+
+                    </IconButton>
+
+                    {/* watchlist */}
+                    <IconButton size='large' onClick={() => handleTabClick('watchlist')}
+                        sx={{
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
+                            }
+                        }}
+                    >
+                        <BookmarkIcon sx={{ color: 'blue' }} fontSize="medium" />
+                    </IconButton>
+
+                    {/* Rating movies  */}
+                    <IconButton size='large' onClick={() => handleTabClick('ratings')}
+                        sx={{
+                            '&:hover': {
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
+                            }
+                        }}
+                    >
+                        <StarIcon sx={{ color: 'gold' }} fontSize="inherit" />
+                    </IconButton>
+                </div>
 
                 <IconButton color="inherit" onClick={handleNotificationIconMenuClick}>
                     {/* <Badge badgeContent={notificationCount} color="primary" > */}
-                    <Badge badgeContent={1} color="primary" >
+                    <Badge badgeContent={0} color="primary" >
                         <NotificationsOutlinedIcon className="icon-cls" style={{ marginRight: "-9px" }} />
 
                     </Badge>

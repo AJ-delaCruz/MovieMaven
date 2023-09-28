@@ -3,7 +3,7 @@ import Star from '@mui/icons-material/Star';
 import StarHalf from '@mui/icons-material/StarHalf';
 import StarBorder from '@mui/icons-material/StarBorder';
 import { useRatingsContext } from '../../contextAPI/RatingsContext';
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 interface RatingProps {
@@ -41,13 +41,27 @@ const Rating: React.FC<RatingProps> = ({ currentRating, onRatingChange, movieId 
 
     return (
         <div style={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton onClick={() => removeRating(movieId)}>
-                <RemoveCircleIcon sx={{
-                    '&:hover': {
-                        color: 'red'
-                    },
-                }} />
-            </IconButton>
+
+            <Tooltip
+                title={
+                    <div style={{
+                        fontSize: '16px',
+                        color: 'white',
+                        padding: '5px 5px',
+                        borderRadius: '6px',
+                    }}>
+                        {'Remove Rating'}
+
+                    </div>
+                }>
+                <IconButton onClick={() => removeRating(movieId)}>
+                    <RemoveCircleIcon sx={{
+                        '&:hover': {
+                            color: 'red'
+                        },
+                    }} />
+                </IconButton>
+            </Tooltip>
 
             {Array.from({ length: 5 }).map((_, index) => (
                 <div style={{ cursor: 'pointer', marginTop: '3px' }}

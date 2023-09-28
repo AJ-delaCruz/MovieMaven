@@ -68,20 +68,26 @@ const MovieDetails: React.FC = () => {
                 <div className="details-container">
                     {movie.tagline && <p className="tagline"><em>{movie.tagline}</em></p>}
 
-                    <div style={{ display: 'flex' }}>
-                        <FavoriteButton movie={movie} />
 
-                        <WatchlistButton movie={movie} />
-
-                        <RatingButton
-                            movie={movie}
-                            isRatingPopoverOpen={Boolean(ratingAnchor)}
-                            ratingAnchorEl={ratingAnchor}
-                            onRatingPopoverClose={closeRatingModal}
-                            onRatingPopoverOpen={openRatingModal}
-                        />
+                    <div style={{ display: 'flex', margin: '15px 5px' }}>
+                        <div style={{ marginRight: '30px' }}>
+                            <FavoriteButton movie={movie} />
+                        </div>
+                        <div style={{ marginRight: '30px' }}>
+                            <WatchlistButton movie={movie} />
+                        </div>
+                        <div>
+                            <RatingButton
+                                movie={movie}
+                                isRatingPopoverOpen={Boolean(ratingAnchor)}
+                                ratingAnchorEl={ratingAnchor}
+                                onRatingPopoverClose={closeRatingModal}
+                                onRatingPopoverOpen={openRatingModal}
+                            />
+                        </div>
 
                     </div>
+
                     <p><strong className="description-label">Description:</strong></p>
                     <p className="description">{movie.overview}</p>
                     <div className="quick-details">

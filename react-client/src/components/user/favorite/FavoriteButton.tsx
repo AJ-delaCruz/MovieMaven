@@ -1,13 +1,11 @@
-import { MovieType } from '../../../types/movie';
 import { useFavoritesContext } from '../../../contextAPI/FavoritesContext';
 import { IconButton, Tooltip } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import './button.scss';
+import { ButtonType } from '../../../types/button';
 
-interface FavoriteProps {
-    movie: MovieType;
-}
 
-const FavoriteButton: React.FC<FavoriteProps> = ({ movie }) => {
+const FavoriteButton: React.FC<ButtonType> = ({ movie, colorTheme }) => {
     const { favoritesMovieIds, addFavorite, removeFavorite } = useFavoritesContext();
 
     const handleFavoriteToggle = () => {
@@ -18,22 +16,34 @@ const FavoriteButton: React.FC<FavoriteProps> = ({ movie }) => {
         }
     };
 
+    const favoriteColor = () => {
+        if (favoritesMovieIds[movie.id]) {
+            return "red"; // favorited
+        } else {
+            return colorTheme === "menu" ? "gray" : "#E0E0E0"; //gray for menu, light gray for movie card
+        }
+    };
+
+    const backgroundColor = colorTheme === "menu" ? "" : "rgba(255, 255, 255, 0.2)";
+    const iconButtonStyle = colorTheme === "menu" ? {
+        backgroundColor: backgroundColor
+    } : {
+        backgroundColor: backgroundColor,
+        padding: '10px'
+    };
     return (
-        <div>
+        <div >
             <Tooltip
                 title={
-                    <div style={{
-                        fontSize: '16px',
-                        color: 'white',
-                        padding: '5px 5px',
-                        borderRadius: '6px',
-                    }}>
-                        {'Mark as favorite'}
+                    <div className='tooltip-content'>
+                        {favoritesMovieIds[movie.id] ? 'Unmark as favorite' : 'Mark as favorite'}
 
                     </div>
                 }>
-                <IconButton onClick={handleFavoriteToggle}>
-                    <FavoriteIcon style={{ color: favoritesMovieIds[movie.id] ? "red" : "inherit" }} />
+                <IconButton
+                    style={iconButtonStyle}
+                    onClick={handleFavoriteToggle}>
+                    <FavoriteIcon style={{ color: favoriteColor() }} />
                 </IconButton>
             </Tooltip>
         </div>

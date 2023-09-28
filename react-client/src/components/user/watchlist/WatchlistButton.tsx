@@ -1,14 +1,11 @@
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { MovieType } from '../../../types/movie';
 import { IconButton, Tooltip } from '@mui/material';
 import { useWatchlistContext } from '../../../contextAPI/WatchlistContext';
+import { ButtonType } from '../../../types/button';
 
-interface WatchlistProps {
-    movie: MovieType;
-}
 
-const WatchlistButton: React.FC<WatchlistProps> = ({ movie }) => {
+const WatchlistButton: React.FC<ButtonType> = ({ movie, colorTheme }) => {
     const { watchlistMovieIds, addToWatchlist, removeFromWatchlist } = useWatchlistContext();
 
     const handleWatchlistToggle = () => {
@@ -19,25 +16,40 @@ const WatchlistButton: React.FC<WatchlistProps> = ({ movie }) => {
         }
     };
 
+    const watchlistColor = () => {
+        if (watchlistMovieIds[movie.id]) {
+            return "blue";
+        } else {
+            return colorTheme === "menu" ? "gray" : "#E0E0E0"; //gray for menu, light gray for movie card
+        }
+    };
+
+    const backgroundColor = colorTheme === "menu" ? "" : "rgba(255, 255, 255, 0.2)";
+    const iconButtonStyle = colorTheme === "menu" ? {
+        backgroundColor: backgroundColor
+    } : {
+        backgroundColor: backgroundColor,
+        padding: '10px'
+    };
+
     return (
-        <div>
+        <div >
             <Tooltip
                 title={
-                    <div style={{
-                        fontSize: '16px',
-                        color: 'white',
-                        padding: '5px 5px',
-                        borderRadius: '6px',
-                    }}>
-                        {'Add to watchlist'}
+                    <div className='tooltip-content'>
+                        {watchlistMovieIds[movie.id] ?
+                            'Remove from watchlist'
+                            : 'Add to watchlist'}
 
                     </div>
                 }>
 
-                <IconButton onClick={handleWatchlistToggle}>
+                <IconButton
+                    style={iconButtonStyle}
+                    onClick={handleWatchlistToggle}>
                     {watchlistMovieIds[movie.id]
-                        ? <BookmarkRemoveIcon style={{ color: "blue" }} />
-                        : <BookmarkIcon />
+                        ? <BookmarkRemoveIcon style={{ color: watchlistColor() }} />
+                        : <BookmarkIcon style={{ color: watchlistColor() }} />
                     }
                 </IconButton>
 

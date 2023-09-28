@@ -13,10 +13,20 @@ interface RatingButtonProps {
     onRatingPopoverClose: () => void;
     onRatingPopoverOpen?: (e: React.MouseEvent<HTMLElement>) => void;
     showIcon?: boolean;
+    colorTheme?: "menu" | "card";
 
 }
 
-const RatingButton: React.FC<RatingButtonProps> = ({ movie, isRatingPopoverOpen, ratingAnchorEl, onRatingPopoverClose, onRatingPopoverOpen, showIcon = true }) => {
+const RatingButton: React.FC<RatingButtonProps> = (
+    { movie,
+        isRatingPopoverOpen,
+        ratingAnchorEl,
+        onRatingPopoverClose,
+        onRatingPopoverOpen,
+        showIcon = true,
+        colorTheme
+    }) => {
+
     const { ratings, addOrUpdateRating } = useRatingsContext();
     const userRating = ratings[movie.id] || 0;
 
@@ -26,6 +36,22 @@ const RatingButton: React.FC<RatingButtonProps> = ({ movie, isRatingPopoverOpen,
     };
 
 
+    const starColor = () => {
+        if (userRating > 0) {
+            return "gold";
+        } else {
+            return colorTheme === "menu" ? "gray" : "#E0E0E0"; //gray for menu, light gray for movie card
+        }
+    };
+
+    const backgroundColor = colorTheme === "menu" ? "" : "rgba(255, 255, 255, 0.2)";
+    const iconButtonStyle = colorTheme === "menu" ? {
+        backgroundColor: backgroundColor
+    } : {
+        backgroundColor: backgroundColor,
+        padding: '10px'
+    };
+
     return (
         <div>
 
@@ -34,18 +60,13 @@ const RatingButton: React.FC<RatingButtonProps> = ({ movie, isRatingPopoverOpen,
 
                 <Tooltip
                     title={
-                        <div style={{
-                            fontSize: '16px',
-                            color: 'white',
-                            padding: '5px 5px',
-                            // borderRadius: '6px',
-                        }}>
-                            {'Add a rating'}
+                        <div className='tooltip-content'>
+                            {userRating > 0 ? 'Update Rating' : 'Add a rating'}
 
                         </div>
                     }>
-                    <IconButton style={{ background: 'white' }} onClick={onRatingPopoverOpen}>
-                        <StarIcon fontSize="medium" style={{ color: userRating > 0 ? "gold" : "inherit", marginLeft: '1px' }} />
+                    <IconButton style={iconButtonStyle} onClick={onRatingPopoverOpen}>
+                        <StarIcon fontSize="medium" style={{ color: starColor(), marginLeft: '0px' }} />
                     </IconButton>
                 </Tooltip>
 

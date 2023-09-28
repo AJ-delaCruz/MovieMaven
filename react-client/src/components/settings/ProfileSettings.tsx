@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Switch, FormControlLabel, CircularProgress, Tooltip, Alert } from '@mui/material';
+import { TextField, Button, CircularProgress, Tooltip, Alert } from '@mui/material';
 import { UserType } from '../../types/user';
 import axios from 'axios';
 import { backendUrl } from '../../utils/config';
@@ -106,7 +106,7 @@ const ProfileSettings: React.FC = () => {
                         borderColor: '#c4c4c4'  // subtle gray border for better definition
                     }
                 }}
-                InputLabelProps={{ style: { color: '#4a4a4a' } }}
+                InputLabelProps={{ style: { color: 'gray' } }}
 
                 value={profile?.full_name || ''}
                 onChange={e => setProfile({ ...profile, full_name: e.target.value })}

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { List, ListItemButton, ListItemText, Drawer, Typography, Divider } from '@mui/material';
+import { List, ListItemButton, ListItemText, Drawer, Typography } from '@mui/material';
 import './settings.scss';
 
 const Sidebar: React.FC = () => {

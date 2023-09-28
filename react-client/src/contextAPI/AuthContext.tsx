@@ -8,6 +8,7 @@ interface AuthContextType {
     currentUser: string | null;
     login: (token: string) => Promise<void>; //async
     logout: () => void;
+    updateToken: (token: string) => void;
 }
 
 // context object for authentication. Initialize context with undefined (or null)
@@ -58,9 +59,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setCurrentUser(null);
     };
 
+    const updateToken = (token: string) => {
+        localStorage.setItem("token", token);
+        setCurrentUser(token);
+    };
+
     // Provide the shared state to the children components
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout }}>
+        <AuthContext.Provider value={{ currentUser, login, logout, updateToken }}>
             {children}
         </AuthContext.Provider>
     );

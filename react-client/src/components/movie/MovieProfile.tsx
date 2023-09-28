@@ -43,18 +43,22 @@ const MovieProfile: React.FC<MovieProps> = ({ movie }) => {
 
 
 
-                <div style={{ display: 'flex', marginTop: '30px' }}>
-                    <FavoriteButton movie={movie} />
-
-                    <WatchlistButton movie={movie} />
-
-                    <RatingButton
-                        movie={movie}
-                        isRatingPopoverOpen={Boolean(ratingAnchor)}
-                        ratingAnchorEl={ratingAnchor}
-                        onRatingPopoverClose={closeRatingModal}
-                        onRatingPopoverOpen={openRatingModal}
-                    />
+                <div style={{ display: 'flex', marginTop: '15px' }}>
+                    <div style={{ marginRight: '15px' }}>
+                        <FavoriteButton movie={movie} />
+                    </div>
+                    <div style={{ marginRight: '15px' }}>
+                        <WatchlistButton movie={movie} />
+                    </div>
+                    <div>
+                        <RatingButton
+                            movie={movie}
+                            isRatingPopoverOpen={Boolean(ratingAnchor)}
+                            ratingAnchorEl={ratingAnchor}
+                            onRatingPopoverClose={closeRatingModal}
+                            onRatingPopoverOpen={openRatingModal}
+                        />
+                    </div>
 
                 </div>
 

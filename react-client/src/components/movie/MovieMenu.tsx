@@ -54,20 +54,20 @@ const MovieMenu: React.FC<MovieMenuProps> = ({ movie, onMenuToggle }) => {
 
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
 
-                {/* add to watchlist */}
-                <MenuItem>
-                    <ListItemIcon>
-                        <WatchlistButton movie={movie} />
-                    </ListItemIcon>
-                    <ListItemText primary="Watchlist" />
-                </MenuItem>
-
                 {/* add to favorite */}
                 <MenuItem>
                     <ListItemIcon>
-                        <FavoriteButton movie={movie} />
+                        <FavoriteButton movie={movie} colorTheme='menu' />
                     </ListItemIcon>
                     <ListItemText primary="Favorite" />
+                </MenuItem>
+
+                {/* add to watchlist */}
+                <MenuItem>
+                    <ListItemIcon>
+                        <WatchlistButton movie={movie} colorTheme='menu'/>
+                    </ListItemIcon>
+                    <ListItemText primary="Watchlist" />
                 </MenuItem>
 
                 {/* Rating movies */}

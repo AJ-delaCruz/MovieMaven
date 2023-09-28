@@ -1,4 +1,4 @@
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import { useFavoritesContext } from "../../../contextAPI/FavoritesContext";
 import { useRatingsContext } from "../../../contextAPI/RatingsContext";
 import { useWatchlistContext } from "../../../contextAPI/WatchlistContext";
@@ -33,9 +33,20 @@ const DeleteMovieButton: React.FC<DeleteButtonProps> = ({ movie, tabType }) => {
 
     return (
         <div style={{ padding: '10px' }}>
-            <IconButton sx={{ background: 'white', color: 'black', padding: '10px' }} onClick={handleDelete}>
-                <DeleteForeverIcon />
-            </IconButton>
+            {/* <IconButton sx={{ background: 'white', color: 'black', padding: '10px' }} onClick={handleDelete}> */}
+
+            <Tooltip
+                title={
+                    <div className='tooltip-content'>
+                        {'Remove movie'}
+
+                    </div>
+                }>
+                <IconButton style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)', color: '#E0E0E0', padding: '10px' }} onClick={handleDelete}>
+
+                    <DeleteForeverIcon />
+                </IconButton>
+            </Tooltip>
         </div>
     );
 }
