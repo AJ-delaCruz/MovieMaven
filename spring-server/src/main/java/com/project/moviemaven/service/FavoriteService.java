@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.moviemaven.dto.MovieDTO;
 import com.project.moviemaven.dto.MovieMapper;
@@ -15,8 +16,9 @@ import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.User;
 // import com.project.moviemaven.repository.FavoriteRepository;
+import com.project.moviemaven.repository.MovieRepository;
+import com.project.moviemaven.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -26,6 +28,8 @@ public class FavoriteService {
     // private final FavoriteRepository favoriteRepository;
     private final UserService userService;
     private final MovieService movieService;
+    private final MovieRepository movieRepository;
+    private final UserRepository userRepository;
 
     // add movie to favorite
     @Transactional
@@ -44,8 +48,8 @@ public class FavoriteService {
             throw new BadRequestException(movie.getTitle() + " already exists in favorites");
         }
 
-        // userRepository.save(user); //automatic Persistence with @Transactional
-        // movieRepository.save(movie);
+        userRepository.save(user); // automatic Persistence with @Transactional
+        movieRepository.save(movie);
     }
 
     // remove favorite movie
@@ -53,7 +57,7 @@ public class FavoriteService {
     public void removeFavorite(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username);
 
-        Movie movie = movieService.getMovieFromDb(tmdbId)
+        Movie movie = movieRepository.findByTmdbId(tmdbId)
                 .orElseThrow(() -> new NotFoundException("Movie not found in database"));
 
         // remove movie from favorite list
@@ -65,12 +69,12 @@ public class FavoriteService {
             throw new NotFoundException(movie.getTitle() + " doesn't exist in favorites");
         }
 
-        // userRepository.save(user);
-        // movieRepository.save(movie);
+        userRepository.save(user);
+        movieRepository.save(movie);
     }
 
     // retrieve favorite movies of user
-    @Transactional
+    @Transactional(readOnly = true)
     public List<MovieDTO> getFavorites(String username) {
         User user = userService.getUserByUsername(username);
 
@@ -79,6 +83,5 @@ public class FavoriteService {
                 .map(movie -> MovieMapper.toMovieDTO(movie))
                 .collect(Collectors.toList());
     }
-
 
 }

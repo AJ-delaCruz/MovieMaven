@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.moviemaven.dto.MovieDTO;
 import com.project.moviemaven.dto.MovieMapper;
@@ -13,7 +14,9 @@ import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.User;
-import jakarta.transaction.Transactional;
+import com.project.moviemaven.repository.MovieRepository;
+import com.project.moviemaven.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,6 +25,8 @@ public class WatchListService {
 
     private final UserService userService;
     private final MovieService movieService;
+    private final UserRepository userRepository;
+    private final MovieRepository movieRepository;
 
     // add movie to user's watch list
     @Transactional
@@ -40,8 +45,8 @@ public class WatchListService {
         }
 
         // // note: automatic Persistence with @Transactional
-        // userRepository.save(user); // save the changes to User
-        // movieRepository.save(movie); // save the changes to Movie
+        userRepository.save(user); // save the changes to User
+        movieRepository.save(movie); // save the changes to Movie
 
     }
 
@@ -60,7 +65,7 @@ public class WatchListService {
     @Transactional
     public void removeFromWatchList(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username);// retrieve user from db
-        Movie movie = movieService.getMovieFromDb(tmdbId)// retrieve movie from db
+        Movie movie = movieRepository.findByTmdbId(tmdbId)// retrieve movie from db
                 .orElseThrow(() -> new NotFoundException("Movie not found in database"));
 
         if (user.getWatchList().contains(movie)) {

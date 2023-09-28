@@ -1,6 +1,7 @@
 package com.project.moviemaven.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +30,7 @@ public class MovieController {
 
     // retrieve movie from db
     @GetMapping("/{id}")
-    public Movie getMovieById(@PathVariable Long id) {
+    public Optional<Movie> getMovieById(@PathVariable Long id) {
         return movieService.getMovieFromDb(id);
     }
 
