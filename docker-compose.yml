@@ -1,17 +1,27 @@
 version: '3.8'
 
 services:
-
   backend:
     build:
       context: ./spring-server
       dockerfile: Dockerfile
+    image: aj09/movie-server
     env_file:
       - ./spring-server/src/main/resources/.env
     ports:
       - 3000:3000
     depends_on:
       - database
+
+  frontend:
+    build: 
+      context: ./react-client
+      dockerfile: Dockerfile
+    image: aj09/movie-client
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
 
   database:
     image: postgres
