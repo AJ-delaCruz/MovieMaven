@@ -33,7 +33,18 @@
     color: #0eaabe;
   }
 
-  .leftRight,
+  .leftRight {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff; // White
+    cursor: pointer;
+
+    &:hover {
+      color: #ccc; // Light Gray
+    }
+  }
+
   .icon-cls {
     color: #ffffff; // White
     cursor: pointer;

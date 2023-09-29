@@ -25,7 +25,7 @@ import { useProfileContext } from '../../contextAPI/ProfileContext';
 const Navbar: React.FC = () => {
     const [notificationAnchorEl, setNotificationAnchorEl] = useState<null | HTMLElement>(null);
     const [profileAnchorEl, setProfileAnchorEl] = useState<null | HTMLElement>(null);
-    const { setActiveTab } = useProfileContext(); //tabs
+    const { activeTab, setActiveTab } = useProfileContext(); //tabs
     const location = useLocation();
 
     const { logout } = useAuthContext();
@@ -121,22 +121,24 @@ const Navbar: React.FC = () => {
                         sx={{
                             '&:hover': {
                                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
-                            }
+                            },
+                            color: activeTab === 'favorites' ? 'red' : '#ffffff' // dynamic coloring
                         }}
                     >
-                        <FavoriteIcon sx={{ color: 'red' }} fontSize="medium" />
-
+                        <FavoriteIcon fontSize="medium" />
                     </IconButton>
+
 
                     {/* watchlist */}
                     <IconButton size='large' onClick={() => handleTabClick('watchlist')}
                         sx={{
                             '&:hover': {
                                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
-                            }
+                            },
+                            color: activeTab === 'watchlist' ? 'blue' : '#ffffff'
                         }}
                     >
-                        <BookmarkIcon sx={{ color: 'blue' }} fontSize="medium" />
+                        <BookmarkIcon fontSize="medium" />
                     </IconButton>
 
                     {/* Rating movies  */}
@@ -144,10 +146,11 @@ const Navbar: React.FC = () => {
                         sx={{
                             '&:hover': {
                                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
-                            }
+                            },
+                            color: activeTab === 'ratings' ? 'gold' : '#ffffff'
                         }}
                     >
-                        <StarIcon sx={{ color: 'gold' }} fontSize="inherit" />
+                        <StarIcon fontSize="inherit" />
                     </IconButton>
                 </div>
 
