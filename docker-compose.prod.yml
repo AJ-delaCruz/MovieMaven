@@ -6,8 +6,8 @@ services:
     build: #builds the docker image locally
       context: ./spring-server
       dockerfile: Dockerfile
-    # env_file:
-    #   - ./spring-server/src/main/resources/.env
+    env_file:
+      - ./spring-server/src/main/resources/.env
     ports:
       - 3000:3000
     depends_on:
@@ -16,6 +16,7 @@ services:
       SPRING_DATASOURCE_URL: ${POSTGRES_URL}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
 
   database:
     image: postgres

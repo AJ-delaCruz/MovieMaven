@@ -2,6 +2,7 @@ package com.project.moviemaven.config;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,11 +26,13 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    @Value("${CORS_ALLOWED_ORIGIN:}")
+    private String allowedCorsOrigin;
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() { //https://docs.spring.io/spring-security/reference/reactive/integrations/cors.html
+    public CorsConfigurationSource corsConfigurationSource() { // https://docs.spring.io/spring-security/reference/reactive/integrations/cors.html
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4000", "http://localhost", allowedCorsOrigin));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
