@@ -122,7 +122,7 @@ const Navbar: React.FC = () => {
                             '&:hover': {
                                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
                             },
-                            color: activeTab === 'favorites' ? 'red' : '#ffffff' // dynamic coloring
+                            color: (activeTab === 'favorites' && location.pathname === "/profile") ? 'red' : '#ffffff' // dynamic coloring
                         }}
                     >
                         <FavoriteIcon fontSize="medium" />
@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
                             '&:hover': {
                                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
                             },
-                            color: activeTab === 'watchlist' ? 'blue' : '#ffffff'
+                            color: (activeTab === 'watchlist' && location.pathname === "/profile") ? 'blue' : '#ffffff'
                         }}
                     >
                         <BookmarkIcon fontSize="medium" />
@@ -147,7 +147,7 @@ const Navbar: React.FC = () => {
                             '&:hover': {
                                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // lighten on hover
                             },
-                            color: activeTab === 'ratings' ? 'gold' : '#ffffff'
+                            color: (activeTab === 'ratings' && location.pathname === "/profile") ? 'gold' : '#ffffff'
                         }}
                     >
                         <StarIcon fontSize="inherit" />
