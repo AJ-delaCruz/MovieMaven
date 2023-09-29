@@ -1,0 +1,25 @@
+node_modules
+npm-debug.log
+
+build
+.cache
+.eslintcache
+
+# Git
+.git
+.gitignore
+
+
+
+# IDE and editors
+.idea
+.vscode
+
+# OS generated files
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
+dist
+
+.env
