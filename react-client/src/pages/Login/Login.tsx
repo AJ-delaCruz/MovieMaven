@@ -37,14 +37,14 @@ const Login: React.FC = () => {
                 password: password
             });
 
-            console.log(res.data);
+            // console.log(res.data);
             const { access_token } = res.data;
             await login(access_token)
 
             // Navigate to home page after successful login
             navigate('/');
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             // setErrorMessage(err.response.data.message);
             const error = err as AxiosError;
 

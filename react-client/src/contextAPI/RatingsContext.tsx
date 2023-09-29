@@ -42,7 +42,7 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
                     'Content-Type': 'application/json'
                 }
             });
-            console.log(response);
+            // console.log(response);
 
             //update rated movies state if it doesn't exist in case of updating rating
             setRatedMovies(prevState => {
@@ -60,8 +60,8 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
             showSnackbar("Successfully rated movie!", "success");
 
         } catch (error) {
-            const err = error as AxiosError;
-            console.log(err.response?.data);
+            // const err = error as AxiosError;
+            // console.log(err.response?.data);
             console.error("Failed to add or update rating for movie: " + movie.id, error);
             showSnackbar("Failed to rate movie. Please try again.", "error");
 
@@ -75,7 +75,7 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
                     'Authorization': `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            console.log(response);
+            // console.log(response);
 
 
             setRatedMovies(prevMovies => prevMovies.filter(movie => movie.id !== movieId));//update state
@@ -101,9 +101,6 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            console.log("ratings");
-            console.log(data);
-
 
             //store ratings of each movie rated
             const userRatings: Record<number, number> = {};
@@ -115,7 +112,7 @@ export const RatingsProvider: React.FC<RatingsProviderProps> = ({ children }) =>
             setRatedMovies(data);
 
         } catch (err) {
-            console.log(err);
+            console.error("Failed to retrieve ratings for movies: ", err);
         }
     };
 

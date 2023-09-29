@@ -27,7 +27,7 @@ const ProfileSettings: React.FC = () => {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 });
-                console.log(response.data);
+                // console.log(response.data);
                 setProfile(response.data);
             } catch (error) {
                 console.error("Failed to retrieve user data:", error);
@@ -46,7 +46,7 @@ const ProfileSettings: React.FC = () => {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            console.log(response.data);
+            // console.log(response.data);
             const newToken = response.data;
             updateToken(newToken); // update token in context after updating
 

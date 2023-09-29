@@ -35,7 +35,7 @@ const MovieDetails: React.FC = () => {
                 movieData.id = movieData.tmdb_id; //Convert tmdb_id to id. ID is null for movie details
                 setMovie(movieData);
                 // setMovie(response.data);
-                console.log(movieData);
+                // console.log(movieData);
 
             } catch (err) {
                 console.error('Failed to fetch movie details:', err);

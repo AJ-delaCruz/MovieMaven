@@ -26,7 +26,7 @@ const SearchResult: React.FC = () => {
                     const response = await axios.get(`${backendUrl}/api/tmdb/search?query=${query}&page=${currentPage}`);
                     setMovies(response.data.movies);
                     setTotalPages(response.data.totalPages);
-                    console.log(response.data);
+                    // console.log(response.data);
 
                 } catch (error) {
                     console.error("Failed to fetch search results:", error);

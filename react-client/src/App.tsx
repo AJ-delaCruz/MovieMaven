@@ -73,7 +73,7 @@ const SettingsLayout: React.FC = () => {
 
     const { currentUser } = useAuthContext();
 
-    console.log(currentUser);
+    // console.log(currentUser);
     if (!currentUser) {
       return <Navigate to="/login" />;
     }

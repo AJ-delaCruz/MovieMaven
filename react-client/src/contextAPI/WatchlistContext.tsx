@@ -51,7 +51,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
                 }
 
             });
-            console.log(response); //check if movie is added to watchlist
+            // console.log(response); //check if movie is added to watchlist
 
             setWatchlist(prevState => [...prevState, movie]); //update watchlist state
             setWatchlistMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
@@ -59,8 +59,8 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
             showSnackbar("Movie successfully added to watchlist!", "success");
 
         } catch (error) {
-            const err = error as AxiosError; //todo UI error
-            console.log(err.response?.data);
+            // const err = error as AxiosError; //todo UI error
+            // console.log(err.response?.data);
             console.error("Failed to add movie to watchlist: " + movie.id, error);
 
             showSnackbar("Failed to add movie to watchlist. Please try again.", "error");
@@ -77,7 +77,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
                 }
             });
 
-            console.log(response);
+            // console.log(response);
 
             setWatchlist(prevState => prevState.filter(movie => movie.id !== movieId)); //update state
             setWatchlistMovieIds(prevState => {
@@ -103,7 +103,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            console.log(data);
+            // console.log(data);
 
             //save movie ids as true
             const movieIds: Record<number, boolean> = {};
@@ -115,7 +115,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
             setWatchlist(data); //retrieve up to date data from backend
 
         } catch (err) {
-            console.log(err);
+            console.error("Failed to retrieve watchlist: ", err);
         }
     };
 

@@ -47,14 +47,14 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
                 }
             });
 
-            console.log(response); //check if movie is added
+            // console.log(response); //check if movie is added
             setFavorites(prevFavorites => [...prevFavorites, movie]);
             setFavoritesMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
             // Show success snackbar
             showSnackbar("Movie added to favorites successfully!", "success");
         } catch (error) {
-            const err = error as AxiosError;
-            console.log(err.response?.data);
+            // const err = error as AxiosError;
+            // console.log(err.response?.data);
             console.error("Failed to add movie to favorites: " + movie.id, error);
             // Show error snackbar
             showSnackbar("Failed to add movie to favorites. Please try again!", "error");
@@ -69,7 +69,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
                 }
             });
 
-            console.log(response);
+            // console.log(response);
 
             setFavorites(prevState => prevState.filter(movie => movie.id !== movieId));
             setFavoritesMovieIds(prevFavorites => {
@@ -95,7 +95,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
                 }
             });
 
-            console.log(data);
+            // console.log(data);
             //save movie ids as true
             const favoriteMoviesIds: Record<number, boolean> = {};
 
@@ -107,7 +107,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             setFavorites(data);
 
         } catch (err) {
-            console.log(err);
+            console.error("Failed to retrieve favorite movies: ", err);
         }
     };
 

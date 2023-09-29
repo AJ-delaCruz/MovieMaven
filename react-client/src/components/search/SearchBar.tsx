@@ -21,7 +21,7 @@ const SearchBar: React.FC = () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${backendUrl}/api/tmdb/search?query=${userInput}`);
-            console.log(response.data.movies);
+            // console.log(response.data.movies);
             setResults(response.data.movies);
         } catch (error) {
             console.error("Failed to fetch search results:", error);

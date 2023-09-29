@@ -18,7 +18,7 @@ const DeleteAccount: React.FC = () => {
                 }
             });
             if (response.status === 200) {
-                console.log("Account deleted");
+                // console.log("Account deleted");
                 logout();
             }
         } catch (error) {

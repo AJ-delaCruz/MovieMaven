@@ -28,7 +28,7 @@ const EditPassword: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        console.log(formData);
+        // console.log(formData);
         if (formData.new_password !== formData.confirm_new_password) {
             setSnackbarMessage("New password and confirmation password do not match!");
             setAlertSeverity("warning");
