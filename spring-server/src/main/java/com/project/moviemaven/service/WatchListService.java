@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class WatchListService {
 
     // add movie to user's watch list
     @Transactional
+    @CacheEvict(value = "watchlist", key = "#username")
     public void addToWatchList(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
@@ -44,7 +46,7 @@ public class WatchListService {
             throw new BadRequestException(movie.getTitle() + " already exists in watch list");
         }
 
-        // // note: automatic Persistence with @Transactional
+        // note: automatic Persistence with @Transactional
         userRepository.save(user); // save the changes to User
         movieRepository.save(movie); // save the changes to Movie
 
@@ -52,6 +54,7 @@ public class WatchListService {
 
     // retrieve user's watchlist
     @Transactional
+    @Cacheable(value = "watchlist", key = "#username")
     public List<MovieDTO> getWatchList(String username) {
         User user = userService.getUserByUsername(username);
         // movies from watch list
@@ -63,6 +66,7 @@ public class WatchListService {
 
     // remove movie from user's watch list
     @Transactional
+    @CacheEvict(value = "watchlist", key = "#username")
     public void removeFromWatchList(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username);// retrieve user from db
         Movie movie = movieRepository.findByTmdbId(tmdbId)// retrieve movie from db

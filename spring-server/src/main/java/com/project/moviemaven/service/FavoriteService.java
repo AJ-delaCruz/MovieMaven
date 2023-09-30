@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class FavoriteService {
 
     // add movie to favorite
     @Transactional
-    // @CacheEvict(value = "user", key = "#username")
+    @CacheEvict(value = "favorite", key = "#username")
     public void addFavorite(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
@@ -54,6 +55,7 @@ public class FavoriteService {
 
     // remove favorite movie
     @Transactional
+    @CacheEvict(value = "favorite", key = "#username")
     public void removeFavorite(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username);
 
@@ -75,6 +77,7 @@ public class FavoriteService {
 
     // retrieve favorite movies of user
     @Transactional(readOnly = true)
+    @Cacheable(value = "favorite", key = "#username")
     public List<MovieDTO> getFavorites(String username) {
         User user = userService.getUserByUsername(username);
 

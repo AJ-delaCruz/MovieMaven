@@ -1,5 +1,6 @@
 package com.project.moviemaven.dto;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -8,7 +9,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MovieDTO {
+public class MovieDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String title;
     private String releaseDate;

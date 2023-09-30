@@ -3,7 +3,8 @@ package com.project.moviemaven.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hibernate.Hibernate;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class RatingService {
 
     // add or update rating
     @Transactional
+    @CacheEvict(value = "userRatings", key = "#username")
     public void addOrUpdateRating(String username, Long tmdbId, Float ratingValue) {
         if (ratingValue < 1 || ratingValue > 10) {
             throw new IllegalArgumentException("Rating value must be between 1 and 10");
@@ -50,6 +52,7 @@ public class RatingService {
 
     // delete rating for specific movie
     @Transactional
+    @CacheEvict(value = "userRatings", key = "#username")
     public void removeRating(String username, Long tmdbId) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
@@ -63,9 +66,9 @@ public class RatingService {
 
     }
 
-
-    //retrieve movies with user ratings
+    // retrieve movies with user ratings
     @Transactional(readOnly = true)
+    @Cacheable(value = "userRatings", key = "#username")
     public List<MovieDTO> getRatingsWithMoviesByUser(String username) {
         User user = userService.getUserByUsername(username);
 
@@ -82,12 +85,9 @@ public class RatingService {
                 .collect(Collectors.toList());
     }
 
-
-
-
-/*
- * Unused, saved for future
- */
+    /*
+     * Unused, saved for future
+     */
     // add rating
     @Transactional
     public void addRating(String username, Long tmdbId, Float ratingValue) {
@@ -163,7 +163,5 @@ public class RatingService {
                 .map(movie -> MovieMapper.toMovieDTO(movie))
                 .collect(Collectors.toList());
     }
-
-
 
 }

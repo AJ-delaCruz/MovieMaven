@@ -46,13 +46,13 @@ public class Movie implements Serializable {
     @Column(name = "release_date")
     private String releaseDate;
     // private List<Review> reviews;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection // (fetch = FetchType.EAGER)
     @CollectionTable(name = "genres", joinColumns = @JoinColumn(name = "movie_id"))
     private List<String> genres; // embedded
     @Column(columnDefinition = "TEXT")
     private String overview;
     private String tagline;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection // (fetch = FetchType.EAGER)
     @CollectionTable(name = "spoken_languages", joinColumns = @JoinColumn(name = "movie_id"))
     private List<String> spokenLanguages;
 
