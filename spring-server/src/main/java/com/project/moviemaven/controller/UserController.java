@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.moviemaven.dto.PasswordRequest;
+import com.project.moviemaven.dto.UserDTO;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.security.JwtService;
 import com.project.moviemaven.service.UserService;
@@ -29,15 +30,13 @@ public class UserController {
 
     // retrieve user by username
     @GetMapping
-    public ResponseEntity<User> getCurrentUser(Principal principal) {
+    public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
         // public ResponseEntity<User> getCurrentUser(Authentication authentication) {
         // String username = authentication.getName();
-        // System.out.println("Principal.Principal()" + principal);
+   
         String username = principal.getName(); // represents currently authenticated user
 
-        System.out.println("UserController.getCurrentUser() " + username);
-        User user = userService.getUserByUsername(username);
-        System.out.println("getUserByUsername.getUserByUsername() " + user);
+        UserDTO user = userService.getUserDTOByUsername(username);
         return ResponseEntity.ok(user);
     }
 

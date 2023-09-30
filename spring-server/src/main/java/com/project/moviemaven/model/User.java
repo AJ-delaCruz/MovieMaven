@@ -73,7 +73,7 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     @Builder.Default
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany // (fetch = FetchType.EAGER)
     @JoinTable(name = "user_watchlist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> watchList = new LinkedHashSet<>();
     // private List<Movie> watchList = new ArrayList<>();
@@ -82,7 +82,7 @@ public class User implements UserDetails {
     @EqualsAndHashCode.Exclude
     @Builder.Default
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany // (fetch = FetchType.EAGER)
     @JoinTable(name = "user_favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "movie_id"))
     private Set<Movie> favorites = new LinkedHashSet<>();
     // private List<Movie> favorites = new ArrayList<>();

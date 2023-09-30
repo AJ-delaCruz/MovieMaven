@@ -1,5 +1,7 @@
 package com.project.moviemaven.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.project.moviemaven.dto.PasswordRequest;
+import com.project.moviemaven.dto.UserDTO;
+import com.project.moviemaven.dto.UserWrapper;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.repository.UserRepository;
@@ -29,13 +33,19 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    // retrieve user data by username
-    // @Cacheable(value = "user", key = "#username")
+    // helper - retrieve user data by username
     public User getUserByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        // System.out.println("UserService.getUserByUsername() " + user);
         return user;
+    }
+
+    @Cacheable(value = "user", key = "#username")
+    public UserDTO getUserDTOByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return UserWrapper.userProfileDTO(user);
     }
 
     // retrieve user by ID
@@ -45,11 +55,10 @@ public class UserService implements UserDetailsService {
     }
 
     // update user
+    @CachePut(value = "user", key = "#username")
     public User updateUser(String username, User updatedUser) {
         User currentUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        System.out.println("UserService.updateUser() " + updatedUser);
 
         if (!updatedUser.getUsername().equals(username)) {
             currentUser.setUsername(updatedUser.getUsername());
@@ -67,7 +76,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    // update user's passwrod
+    // update user's password
     public User updatePassword(PasswordRequest passwordRequest, String username) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -85,6 +94,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    @CacheEvict(value = "user", key = "#username")
     public void deleteAccount(PasswordRequest passwordRequest, String username) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
