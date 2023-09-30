@@ -56,7 +56,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
             setWatchlist(prevState => [...prevState, movie]); //update watchlist state
             setWatchlistMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
 
-            showSnackbar("Movie successfully added to watchlist!", "success");
+            showSnackbar(movie.title + " successfully added to watchlist!", "success");
 
         } catch (error) {
             // const err = error as AxiosError; //todo UI error

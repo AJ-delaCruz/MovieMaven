@@ -51,7 +51,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
             setFavorites(prevFavorites => [...prevFavorites, movie]);
             setFavoritesMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
             // Show success snackbar
-            showSnackbar("Movie added to favorites successfully!", "success");
+            showSnackbar(movie.title + " added to favorites successfully!", "success");
         } catch (error) {
             // const err = error as AxiosError;
             // console.log(err.response?.data);
