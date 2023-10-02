@@ -8,6 +8,7 @@ import { FavoritesProvider } from './contextAPI/FavoritesContext';
 import { WatchlistProvider } from './contextAPI/WatchlistContext';
 import { ProfileProvider } from './contextAPI/ProfileContext';
 import SnackbarProvider from './contextAPI/SnackBarAlertContext';
+import { PostProvider } from './contextAPI/PostContext';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,15 +18,17 @@ root.render(
 
     <SnackbarProvider>
       <RatingsProvider>
-        <FavoritesProvider>
-          <WatchlistProvider>
-            <AuthProvider>
-              <ProfileProvider>
-                <App />
-              </ProfileProvider>
-            </AuthProvider>
-          </WatchlistProvider>
-        </FavoritesProvider>
+        <PostProvider>
+          <FavoritesProvider>
+            <WatchlistProvider>
+              <AuthProvider>
+                <ProfileProvider>
+                  <App />
+                </ProfileProvider>
+              </AuthProvider>
+            </WatchlistProvider>
+          </FavoritesProvider>
+        </PostProvider>
       </RatingsProvider>
     </SnackbarProvider>
 

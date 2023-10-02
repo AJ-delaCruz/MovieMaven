@@ -4,33 +4,33 @@ import { useAuthContext } from '../../contextAPI/AuthContext';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import './comment.scss';
 import { MoreVert } from '@mui/icons-material';
-import DeleteCommentButton from './DeleteCommentButton';
-import EditCommentButton from './EditCommentButton';
 import { PostType } from '../../types/post';
+import './post.scss';
+import DeletePostButton from './DeletePostButton';
+import EditPostButton from './EditPostButton';
 
-interface CommentProps {
-    comment: PostType;
+interface PostProps {
+    post: PostType;
 
 }
 
-const Comment: React.FC<CommentProps> = ({ comment }) => {
-    const isAuthor = Boolean(comment.username === 'Alice');
+const Post: React.FC<PostProps> = ({ post }) => {
+    const isAuthor = Boolean(post.username === 'Alice');
 
     const renderTime = () => {
-        const createdAt = new Date(comment.created_at);
-        const updatedAt = new Date(comment.updated_at);
+        const createdAt = new Date(post.created_at);
+        const updatedAt = new Date(post.updated_at);
         const timeDifference = updatedAt.getTime() - createdAt.getTime();
 
-        //5 min grace period until a comment as "edited"
+        //5 min grace period until a post as "edited"
         if (timeDifference > 5 * 60 * 1000) {
             return `Edited ${createdAt.toLocaleString()}`;
         }
         return createdAt.toLocaleString();
     };
 
-    //menu item for editing/removing comment
+    //menu item for editing/removing post
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleOpenMenu = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -44,23 +44,23 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
 
 
     return (
-        <Card className="comment-card">
+        <Card className="post-card">
             <CardContent>
-                <div className="comment-header">
-                    <Avatar className="comment-avatar">
-                        {comment.username?.charAt(0).toUpperCase()}
+                <div className="post-header">
+                    <Avatar className="post-avatar">
+                        {post.username?.charAt(0).toUpperCase()}
                     </Avatar>
                     <div className="right-section">
-                        <div className="comment-details">
-                            <Typography variant="h6">{comment.username}</Typography>
+                        <div className="post-details">
+                            <Typography variant="h6">{post.username}</Typography>
                             <Typography className='date' variant="caption">{renderTime()}</Typography>
                         </div>
-                        <Typography variant="body2" color="white" className="comment-text">
-                            {comment.text}
+                        <Typography variant="body2" color="white" className="post-text">
+                            {post.text}
                         </Typography>
-                        <div className="comment-actions">
+                        <div className="post-actions">
                             <Button size="small" color="primary" startIcon={<ThumbUpIcon />}>
-                                {comment.likeCount}
+                                {post.likeCount}
                             </Button>
                             <Button size="small" color="primary">
                                 Reply
@@ -68,16 +68,16 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
                         </div>
                     </div>
                     {isAuthor && (
-                        <div className='comment-menu'>
+                        <div className='post-menu'>
                             <IconButton onClick={(e) => handleOpenMenu(e)}>
                                 <MoreVert style={{ color: 'white' }} />
                             </IconButton>
                             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
                                 <MenuItem>
-                                    <EditCommentButton comment={comment} />
+                                    <EditPostButton post={post} />
                                 </MenuItem>
                                 <MenuItem>
-                                    <DeleteCommentButton comment={comment} />
+                                    <DeletePostButton post={post} />
                                 </MenuItem>
                             </Menu>
                         </div>
@@ -89,4 +89,4 @@ const Comment: React.FC<CommentProps> = ({ comment }) => {
 
 
 }
-export default Comment;
+export default Post;

@@ -1,16 +1,16 @@
 import { IconButton, Tooltip } from "@mui/material";
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { useDiscussionContext } from "../../contextAPI/DiscussionContext";
+import { usePostContext } from "../../contextAPI/PostContext";
 import { PostType } from "../../types/post";
 
 interface DeleteButtonProps {
-    comment: PostType;
+    post: PostType;
 }
 
-const DeleteCommentButton: React.FC<DeleteButtonProps> = ({ comment }) => {
-    const { removeComment} = useDiscussionContext();
+const DeletepostButton: React.FC<DeleteButtonProps> = ({ post }) => {
+    const { removePost } = usePostContext();
     const handleDelete = () => {
-        removeComment(comment.id);
+        removePost(post.id);
     };
     return (
         <div >
@@ -18,7 +18,7 @@ const DeleteCommentButton: React.FC<DeleteButtonProps> = ({ comment }) => {
             <Tooltip
                 title={
                     <div className='tooltip-content'>
-                        {'Delete comment'}
+                        {'Delete post'}
 
                     </div>
                 }>
@@ -31,4 +31,4 @@ const DeleteCommentButton: React.FC<DeleteButtonProps> = ({ comment }) => {
     );
 }
 
-export default DeleteCommentButton;
+export default DeletepostButton;
