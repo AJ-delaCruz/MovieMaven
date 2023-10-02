@@ -28,15 +28,16 @@ public class PostController {
     private final PostService postService;
 
     // create post for movie
-    @PostMapping
-    public ResponseEntity<String> createPost(Principal principal, Long tmdbId, @RequestBody PostDTO postDTO) {
+    @PostMapping("/movie/{tmdbId}")
+    public ResponseEntity<String> createPost(Principal principal, @PathVariable Long tmdbId,
+            @RequestBody PostDTO postDTO) {
         String username = principal.getName();
         postService.createPost(username, tmdbId, postDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("Post created successfully.");
     }
 
     // fetch all posts related to a movie
-    @GetMapping
+    @GetMapping("/movie/{movieId}")
     public ResponseEntity<List<Post>> getAllPostsForMovie(@PathVariable Long movieId) {
         List<Post> posts = postService.getAllPostsForMovie(movieId);
         return ResponseEntity.ok(posts);

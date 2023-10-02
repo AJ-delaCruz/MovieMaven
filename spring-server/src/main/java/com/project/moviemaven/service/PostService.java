@@ -23,16 +23,6 @@ public class PostService {
     private final MovieRepository movieRepository;
     private final UserService userService;
 
-    public List<Post> getAllPostsForMovie(Long movieId) {
-        return postRepository.findPostsByMovieId(movieId)
-                .orElseThrow(() -> new NotFoundException("No posts found with movie Id " + movieId));
-    }
-
-    public Post getPostById(Long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No post found with Id " + id));
-    }
-
     @Transactional
     public Post createPost(String username, Long tmdbId, PostDTO postDTO) {
         User user = userService.getUserByUsername(username); // retrieve user from db
@@ -48,6 +38,16 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    public List<Post> getAllPostsForMovie(Long tmdbId) {
+        return postRepository.findByMovie_TmdbId(tmdbId) // use tmdb id instead of movie id
+                .orElseThrow(() -> new NotFoundException("No posts found with movie Id " + tmdbId));
+    }
+
+    public Post getPostById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No post found with Id " + id));
+    }
+
     public Post updatePost(Long id, PostDTO postDTO) {
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No post found with Id " + id));
@@ -61,5 +61,4 @@ public class PostService {
         postRepository.delete(existingPost);
     }
 
-    
 }
