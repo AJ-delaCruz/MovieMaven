@@ -6,10 +6,10 @@ import { useSnackbarContext } from "./SnackBarAlertContext";
 
 type PostContextType = {
     posts: PostType[];
-    addPost: (movieId: string, text: string) => void;
-    removePost: (postId: string) => void;
-    updatePost: (postId: string, updatedText: string) => void;
-    fetchPosts: (movieId: string) => void;
+    addPost: (movieId: number, text: string) => void;
+    removePost: (postId: number) => void;
+    updatePost: (postId: number, updatedText: string) => void;
+    fetchPosts: (movieId: number) => void;
 
 };
 
@@ -31,14 +31,13 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     const showSnackbar = useSnackbarContext();
 
 
-    const addPost = async (movieId: string, text: string) => {
+    const addPost = async (movieId: number, text: string) => {
         try {
-            const response = await axios.post(`${backendUrl}/api/posts/movie/${movieId}`, { post: text }, {
+            const response = await axios.post(`${backendUrl}/api/posts/movie/${movieId}`, { text: text }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }
             });
-
             const newPost: PostType = response.data;
             setPosts(prevPosts => [...prevPosts, newPost]);
             showSnackbar("Post added successfully!", "success");
@@ -49,7 +48,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     };
 
 
-    const removePost = async (postId: string) => {
+    const removePost = async (postId: number) => {
         // Remove post from the movie's discussion
         try {
             const response = await axios.delete(`${backendUrl}/api/posts/${postId}`, {
@@ -66,7 +65,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
         }
     };
 
-    const updatePost = async (postId: string, updatedText: string) => {
+    const updatePost = async (postId: number, updatedText: string) => {
         // Update a specific post in the movie's discussion
         try {
             const response = await axios.put(`${backendUrl}/api/posts/${postId}`, { text: updatedText }, {
@@ -74,6 +73,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }
             });
+
             if (response.status === 200) {
                 setPosts(prev => prev.map(post => post.id === postId ? { ...post, text: updatedText } : post));
                 showSnackbar("Post updated successfully!", "success");
@@ -84,7 +84,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
         }
     };
 
-    const fetchPosts = async (movieId: string) => {
+    const fetchPosts = async (movieId: number) => {
         // Fetch posts for the movie
         try {
             const { data } = await axios.get(`${backendUrl}/api/posts/movie/${movieId}`, {
@@ -92,7 +92,6 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`
                 }
             });
-
             setPosts(data);
         } catch (err) {
             console.error("Failed to retrieve posts: ", err);

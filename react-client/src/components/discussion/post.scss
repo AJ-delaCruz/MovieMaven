@@ -1,17 +1,17 @@
-.comment-card {
+.post-card {
     background-color: #181818 !important;
     color: #f5f5f5 !important;
     position: relative;
     // padding: 15px;
 
-    .comment-avatar {
+    .post-avatar {
         background-color: lighten(#181818, 10%);
         height: 50px;
         width: 50px;
         margin-right: 10px;
     }
 
-    .comment-header {
+    .post-header {
         display: flex;
         align-items: flex-start;
         // margin-top: -20px;
@@ -22,7 +22,7 @@
             flex-direction: column;
             justify-content: space-between;
 
-            .comment-details {
+            .post-details {
                 h6 {
                     // margin: 0;
                     margin-top: 5px;
@@ -34,16 +34,16 @@
                 }
             }
 
-            .comment-text {
+            .post-text {
                 margin-top: 5px;
             }
 
-            .comment-actions {
+            .post-actions {
                 margin-top: 10px;
             }
         }
 
-        .comment-menu {
+        .post-menu {
             align-self: center;
             margin-left: 15px;
         }
