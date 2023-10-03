@@ -1,6 +1,7 @@
 package com.project.moviemaven.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,14 +39,13 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<Post> getAllPostsForMovie(Long tmdbId) {
-        return postRepository.findByMovie_TmdbId(tmdbId) // use tmdb id instead of movie id
+    public List<PostDTO> getAllPostsForMovie(Long tmdbId, String username) {
+        List<Post> posts = postRepository.findByMovie_TmdbId(tmdbId) // use tmdb id instead of movie id
                 .orElseThrow(() -> new NotFoundException("No posts found with movie Id " + tmdbId));
-    }
 
-    public Post getPostById(Long id) {
-        return postRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No post found with Id " + id));
+        return posts.stream()
+                .map(post -> PostDTO.toDTO(post, username))
+                .collect(Collectors.toList());
     }
 
     public Post updatePost(Long id, PostDTO postDTO) {
@@ -59,6 +59,12 @@ public class PostService {
         Post existingPost = postRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No post found with Id " + id));
         postRepository.delete(existingPost);
+    }
+
+    // unused
+    public Post getPostById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No post found with Id " + id));
     }
 
 }
