@@ -3,11 +3,12 @@ import axios from 'axios';
 import { backendUrl } from '../../utils/config';
 import { MovieType } from '../../types/movie';
 import { useState, useEffect } from 'react';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Divider } from '@mui/material';
 import './movie-details.scss';
 import FavoriteButton from '../user/favorite/FavoriteButton';
 import RatingButton from '../user/rating/RatingButton';
 import WatchlistButton from '../user/watchlist/WatchlistButton';
+import Discussion from '../discussion/Discussion';
 
 
 const MovieDetails: React.FC = () => {
@@ -104,6 +105,11 @@ const MovieDetails: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <div>
+                <Discussion movie={movie} />
+            </div>
+
         </div>
     );
 
