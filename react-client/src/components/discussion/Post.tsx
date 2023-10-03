@@ -79,7 +79,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
                             </IconButton>
                             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
                                 <MenuItem>
-                                    <EditPostButton post={post} />
+                                    <EditPostButton post={post} closeMenu={handleCloseMenu} />
                                 </MenuItem>
                                 <MenuItem>
                                     <DeletePostButton post={post} />
