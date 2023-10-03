@@ -11,7 +11,6 @@ import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Movie;
 import com.project.moviemaven.model.Post;
 import com.project.moviemaven.model.User;
-import com.project.moviemaven.repository.MovieRepository;
 import com.project.moviemaven.repository.PostRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,22 +20,26 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MovieRepository movieRepository;
+    private final MovieService movieService;
     private final UserService userService;
 
+    // create and return the post as post DTO
     @Transactional
-    public Post createPost(String username, Long tmdbId, PostDTO postDTO) {
+    public PostDTO createPost(String username, Long tmdbId, PostDTO postDTO) {
         User user = userService.getUserByUsername(username); // retrieve user from db
 
-        Movie movie = movieRepository.findByTmdbId(tmdbId) // retrieve movie using tmdb ID to get Movie ID
-                .orElseThrow(() -> new NotFoundException("No movie found with TMDB ID: " + tmdbId));
+        // retrieve movie from TMDB and/or convert to 'Movie' object and store to db
+        Movie movie = movieService.getOrAddMovieToDb(tmdbId);
 
         Post post = new Post();
         post.setMovie(movie);
         post.setUser(user);
         post.setText(postDTO.getText());
 
-        return postRepository.save(post);
+        post = postRepository.save(post); // Save the new post to the database
+
+        return PostDTO.toDTO(post, username); // Convert the saved Post entity to DTO format
+
     }
 
     public List<PostDTO> getAllPostsForMovie(Long tmdbId, String username) {

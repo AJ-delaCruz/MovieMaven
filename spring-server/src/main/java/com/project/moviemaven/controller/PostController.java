@@ -29,12 +29,11 @@ public class PostController {
 
     // create post for movie
     @PostMapping("/movie/{tmdbId}")
-    public ResponseEntity<Post> createPost(Principal principal, @PathVariable Long tmdbId,
+    public ResponseEntity<PostDTO> createPost(Principal principal, @PathVariable Long tmdbId,
             @RequestBody PostDTO postDTO) {
         String username = principal.getName();
-        Post post = postService.createPost(username, tmdbId, postDTO);
-        // return ResponseEntity.status(HttpStatus.CREATED).body("Post created
-        // successfully.");
+        PostDTO post = postService.createPost(username, tmdbId, postDTO);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
