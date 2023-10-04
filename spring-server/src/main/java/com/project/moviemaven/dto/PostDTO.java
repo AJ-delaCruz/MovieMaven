@@ -20,11 +20,12 @@ public class PostDTO {
 
     private String username;
     private Boolean isAuthor;
+    private Boolean isLikedByUser;
 
-    public static PostDTO toDTO(Post post, String currentUsername) {
+    public static PostDTO toDTO(Post post, String currentUsername, Boolean isLikedByCurrentUser) {
         PostDTO dto = new PostDTO();
         dto.setId(post.getId());
-        dto.setMovieId(post.getMovie().getId()); 
+        dto.setMovieId(post.getMovie().getId());
         dto.setText(post.getText());
         dto.setLikesCount(post.getLikesCount());
         dto.setCreatedAt(post.getCreatedAt());
@@ -32,6 +33,7 @@ public class PostDTO {
 
         dto.setUsername(post.getUser().getUsername());
         dto.setIsAuthor(post.getUser().getUsername().equals(currentUsername));
+        dto.setIsLikedByUser(isLikedByCurrentUser);
 
         return dto;
     }
