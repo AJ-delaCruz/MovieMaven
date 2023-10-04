@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.project.moviemaven.dto.PasswordRequest;
 import com.project.moviemaven.dto.UserDTO;
 import com.project.moviemaven.dto.UserWrapper;
+import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.User;
 import com.project.moviemaven.repository.UserRepository;
@@ -72,7 +73,7 @@ public class UserService implements UserDetailsService {
         try {
             return userRepository.save(currentUser);
         } catch (DataIntegrityViolationException e) {
-            throw new IllegalArgumentException("Username already exists", e);
+            throw new BadRequestException("Username already exists", e);
         }
     }
 
@@ -85,7 +86,7 @@ public class UserService implements UserDetailsService {
         // check for current password
         if (!passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
             // use snake_case (current_password)
-            throw new IllegalArgumentException("Current password is incorrect");
+            throw new BadRequestException("Current password is incorrect");
         }
 
         // update to new password
@@ -103,7 +104,7 @@ public class UserService implements UserDetailsService {
         // check password for verification
         if (!passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
             // use snake_case (current_password)
-            throw new IllegalArgumentException("Password is incorrect");
+            throw new BadRequestException("Password is incorrect");
         }
 
         userRepository.delete(user);
