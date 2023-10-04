@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.project.moviemaven.exception.BadRequestException;
 import com.project.moviemaven.exception.NotFoundException;
 import com.project.moviemaven.model.Like;
 import com.project.moviemaven.model.Post;
@@ -33,7 +34,7 @@ public class LikeService {
         Optional<Like> existingLike = likeRepository.findByUserIdAndPostId(user.getId(), post.getId());
 
         if (existingLike.isPresent()) {
-            throw new IllegalArgumentException("User has already liked this post");
+            throw new BadRequestException("User has already liked this post");
         }
 
         // Create a new Like object
