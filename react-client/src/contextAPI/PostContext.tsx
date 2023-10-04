@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useContext, useState } from "react";
+import React, { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
 import axios from "axios";
 import { backendUrl } from "../utils/config";
 import { PostType } from "../types/post";
@@ -6,6 +6,7 @@ import { useSnackbarContext } from "./SnackBarAlertContext";
 
 type PostContextType = {
     posts: PostType[];
+    setPosts: Dispatch<SetStateAction<PostType[]>>;
     addPost: (movieId: number, text: string) => void;
     removePost: (postId: number) => void;
     updatePost: (postId: number, updatedText: string) => void;
@@ -92,6 +93,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`
                 }
             });
+            console.log(data)
             setPosts(data);
         } catch (err) {
             console.error("Failed to retrieve posts: ", err);
@@ -99,7 +101,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     };
 
     return (
-        <PostContext.Provider value={{ posts, fetchPosts, addPost, removePost, updatePost }}>
+        <PostContext.Provider value={{ posts, setPosts, fetchPosts, addPost, removePost, updatePost }}>
             {children}
         </PostContext.Provider>
     );
