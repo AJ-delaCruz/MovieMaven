@@ -41,6 +41,51 @@
 
             .post-actions {
                 margin-top: 10px;
+
+                .like-button {
+
+                    .like-button-liked,
+                    .like-button-not-liked {
+                        transition: color 1s ease; 
+                
+                        &.like-button-liked {
+                            color: #42a5f5;
+                
+                            &:hover {
+                                color: #c0c0c0;
+                            }
+                        }
+                
+                        &.like-button-not-liked {
+                            color: #c0c0c0;
+                
+                            &:hover {
+                                color: #42a5f5;
+                            }
+                        }
+                    }
+                }
+                
+
+                .like-count {
+                    margin-bottom: -1px; 
+                    &.liked {
+                        color: #42a5f5;
+                    }
+
+                    &.not-liked {
+                        color: #c0c0c0;
+                    }
+                }
+
+
+                .reply-button {
+                    color: #c0c0c0;
+
+                    &:hover {
+                        color: white;
+                    }
+                }
             }
         }
 

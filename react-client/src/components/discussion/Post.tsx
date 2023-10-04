@@ -6,7 +6,8 @@ import { PostType } from '../../types/post';
 import './post.scss';
 import DeletePostButton from './DeletePostButton';
 import EditPostButton from './EditPostButton';
-
+import { useLikeContext } from '../../contextAPI/LikesContext';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 interface PostProps {
     post: PostType;
 
@@ -14,6 +15,7 @@ interface PostProps {
 
 const Post: React.FC<PostProps> = ({ post }) => {
     const isAuthor = post.is_author;
+    const { likePost, unlikePost } = useLikeContext();
 
     const renderTime = () => {
         const createdAt = new Date(post.created_at);
@@ -27,6 +29,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
             hour: '2-digit',
             minute: '2-digit'
         };
+
         //5 min grace period until a post as "edited"
         if (timeDifference > 5 * 60 * 1000) {
             return createdAt.toLocaleString('default', options) + " Edited";
@@ -46,6 +49,14 @@ const Post: React.FC<PostProps> = ({ post }) => {
         setAnchorEl(null);
     };
 
+    //handles like / unlike button
+    const handleLikeClick = () => {
+        if (post.is_liked_by_user) {
+            unlikePost(post.id);
+        } else {
+            likePost(post.id);
+        }
+    };
 
 
     return (
@@ -64,12 +75,24 @@ const Post: React.FC<PostProps> = ({ post }) => {
                             {post.text}
                         </Typography>
                         <div className="post-actions">
-                            <Button size="small" color="primary" startIcon={<ThumbUpIcon />}>
-                                {post.likeCount}
+
+                            <Button className="like-button"
+                                size="small"
+                                onClick={handleLikeClick}
+                                startIcon={
+                                    post.is_liked_by_user ?
+                                        <ThumbUpIcon className='like-button-liked' /> :
+                                        <ThumbUpOffAltIcon className='like-button-not-liked' />
+                                }
+                            >
+                                <span className={`like-count ${post.is_liked_by_user ? 'liked' : 'not-liked'}`}>{post.likes_count}</span>
                             </Button>
-                            <Button size="small" color="primary">
+
+
+                            <Button size="small" className="reply-button">
                                 Reply
                             </Button>
+
                         </div>
                     </div>
                     {isAuthor && (
@@ -89,7 +112,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
                     )}
                 </div>
             </CardContent>
-        </Card>
+        </Card >
     );
 
 

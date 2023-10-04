@@ -93,7 +93,6 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            console.log(data)
             setPosts(data);
         } catch (err) {
             console.error("Failed to retrieve posts: ", err);
