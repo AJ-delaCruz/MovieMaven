@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,11 +91,10 @@ public class WatchListServiceUnitTest {
     public void testGetWatchList() {
         String username = "username";
 
-        user.getWatchList().add(movie1);
-        user.getWatchList().add(movie2);
+        List<Movie> movies = Arrays.asList(movie1, movie2);
 
         // mock
-        when(userService.getUserByUsername(username)).thenReturn(user);
+        when(userRepository.findWatchListByUsername(username)).thenReturn(Optional.of(movies));
 
         // test
         List<MovieDTO> movieDTOList = watchListService.getWatchList(username);

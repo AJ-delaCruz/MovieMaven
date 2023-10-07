@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -104,11 +105,12 @@ public class FavoriteServiceUnitTest {
     public void testGetFavorites() {
         String username = "username";
 
-        user.getFavorites().add(movie1);
-        user.getFavorites().add(movie2);
+        List<Movie> movies = Arrays.asList(movie1, movie2);
 
-        when(userService.getUserByUsername(username)).thenReturn(user);
+        // mock
+        when(userRepository.findFavoriteMoviesByUsername(username)).thenReturn(Optional.of(movies));
 
+        // test
         List<MovieDTO> movieDTOList = favoriteService.getFavorites(username);
 
         assertEquals(movieDTOList.size(), 2);
