@@ -79,9 +79,8 @@ public class FavoriteService {
     @Transactional(readOnly = true)
     @Cacheable(value = "favorite", key = "#username")
     public List<MovieDTO> getFavorites(String username) {
-        User user = userService.getUserByUsername(username);
-
-        Set<Movie> favoriteMovies = user.getFavorites();
+        List<Movie> favoriteMovies = userRepository.findFavoriteMoviesByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Favorite Movies not found in database"));
         return favoriteMovies.stream()
                 .map(movie -> MovieMapper.toMovieDTO(movie))
                 .collect(Collectors.toList());

@@ -56,9 +56,8 @@ public class WatchListService {
     @Transactional
     @Cacheable(value = "watchlist", key = "#username")
     public List<MovieDTO> getWatchList(String username) {
-        User user = userService.getUserByUsername(username);
-        // movies from watch list
-        Set<Movie> watchlistMovies = user.getWatchList();
+        List<Movie> watchlistMovies = userRepository.findWatchListByUsername(username)
+                .orElseThrow(() -> new NotFoundException("Watchlist not found in database"));
         return watchlistMovies.stream()
                 .map(MovieMapper::toMovieDTO)
                 .collect(Collectors.toList());
