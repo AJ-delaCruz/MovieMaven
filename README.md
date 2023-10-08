@@ -1,7 +1,7 @@
 # MovieMaven
 
 ## System Architecture
-<img width="645" alt="System Architecture" src="https://github.com/AJ-delaCruz/MovieMaven/assets/54551895/d3aa61d5-e8a2-4ac4-906a-f114b6a5ae6f">
+<img width="645" alt="System Architecture" src="https://github.com/AJ-delaCruz/MovieMaven/assets/54551895/192db49e-4ad1-4641-a5db-65ea020d6832">
 
 ## Technologies Used
 
@@ -15,17 +15,18 @@
     - [x] themoviedbapi (Java wrapper for the TMDB API)
 
 ### Frontend
-- [ ] React (with TypeScript)
-    - [ ] Context API for state management
+- [x] React (with TypeScript)
+    - [x] Context API for state management
+- [x] Deployed on Netlify with built-in CI/CD
 
 ### Database    
 - [x] PostgreSQL
     - [x] Spring Data JPA for data access
-- [ ] Redis for caching
+- [x] Redis for caching
 
 ### Deployment & DevOps
 - [x] Docker for containerization
-- [x] Jenkins for (CI/CD)
+- [x] Jenkins for CI/CD
 
 ### Cloud Services
 - [ ] AWS
@@ -43,4 +44,4 @@
 - [x] Postman for API testing
 
 ### Performance Testing
-- [ ] JMeter
+- [x] JMeter
