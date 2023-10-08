@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext } from "react";
 import { backendUrl } from "../utils/config";
 import { usePostContext } from "./PostContext";
 

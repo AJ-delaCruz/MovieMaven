@@ -52,7 +52,7 @@ export const PostProvider: React.FC<PostProviderProps> = ({ children }) => {
     const removePost = async (postId: number) => {
         // Remove post from the movie's discussion
         try {
-            const response = await axios.delete(`${backendUrl}/api/posts/${postId}`, {
+            await axios.delete(`${backendUrl}/api/posts/${postId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }

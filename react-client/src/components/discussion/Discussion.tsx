@@ -1,6 +1,6 @@
 
-import { useContext, useEffect, useState } from 'react';
-import { Button, Divider, TextField } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Button, TextField } from '@mui/material';
 import { usePostContext } from '../../contextAPI/PostContext';
 import Post from './Post';
 import { PostType } from '../../types/post';
@@ -28,6 +28,7 @@ const Discussion: React.FC<DiscussionProps> = ({ movie }) => {
         if (movie.tmdb_id !== undefined) {
             fetchPosts(movie.tmdb_id);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

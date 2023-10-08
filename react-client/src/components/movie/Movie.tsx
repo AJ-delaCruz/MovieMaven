@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { MovieType } from '../../types/movie';
 import "./movie.scss";
 import MovieMenu from './MovieMenu';

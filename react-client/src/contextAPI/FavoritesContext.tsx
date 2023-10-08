@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { backendUrl } from "../utils/config";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { MovieType } from "../types/movie";
 import { useSnackbarContext } from "./SnackBarAlertContext";
 
@@ -41,7 +41,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
 
     const addFavorite = async (movie: MovieType) => {
         try {
-            const response = await axios.post(`${backendUrl}/api/favorite/add/${movie.id}`, null, {//not using req.body
+            await axios.post(`${backendUrl}/api/favorite/add/${movie.id}`, null, {//not using req.body
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }
@@ -63,7 +63,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
 
     const removeFavorite = async (movieId: number) => {
         try {
-            const response = await axios.delete(`${backendUrl}/api/favorite/remove/${movieId}`, {
+            await axios.delete(`${backendUrl}/api/favorite/remove/${movieId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { backendUrl } from '../../utils/config';
 import { MovieType } from '../../types/movie';
 import { useState, useEffect } from 'react';
-import { CircularProgress, Divider } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import './movie-details.scss';
 import FavoriteButton from '../user/favorite/FavoriteButton';
 import RatingButton from '../user/rating/RatingButton';

@@ -13,8 +13,10 @@ type MovieSectionProps = {
 
 const MovieSection: React.FC<MovieSectionProps> = ({ genre, category, title }) => {
     const [movies, setMovies] = useState<MovieType[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [page, setPage] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const getMovies = async () => {
@@ -30,6 +32,8 @@ const MovieSection: React.FC<MovieSectionProps> = ({ genre, category, title }) =
                 setMovies(response.data);
             } catch (error) {
                 console.error("Failed to retrieve movies:", error);
+                setError("Failed to load movies. Please try again later."); // Setting error state
+
             } finally {
                 setIsLoading(false);
             }
@@ -46,7 +50,16 @@ const MovieSection: React.FC<MovieSectionProps> = ({ genre, category, title }) =
             </div>
         );
     }
-    
+
+
+    if (error) {
+        return (
+            <div className="error-container">
+                <p>{error}</p>
+            </div>
+        );
+    }
+
     return (
         <div className="movie-section">
             <h1>{title} </h1>

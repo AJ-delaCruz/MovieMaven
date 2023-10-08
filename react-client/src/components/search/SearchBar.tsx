@@ -1,33 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import debounce from 'lodash.debounce'; //https://dmitripavlutin.com/react-throttle-debounce/
 import { MovieType } from '../../types/movie';
 import { backendUrl } from '../../utils/config';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, CircularProgress, List, ListItem, TextField } from '@mui/material';
+import { Button, List, ListItem, TextField } from '@mui/material';
 import './search.scss';
 import { Search } from '@mui/icons-material';
 
 const SearchBar: React.FC = () => {
     const [query, setQuery] = useState<string>("");
     const [results, setResults] = useState<MovieType[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    // const [isLoading, setIsLoading] = useState<boolean>(false);
+    // const [error, setError] = useState<string | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);// Reference to the search-container
 
     const navigate = useNavigate();
 
     const debouncedSearch = async (userInput: string) => {
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
             const response = await axios.get(`${backendUrl}/api/tmdb/search?query=${userInput}`);
             // console.log(response.data.movies);
             setResults(response.data.movies);
         } catch (error) {
             console.error("Failed to fetch search results:", error);
-            setError("Failed to fetch search results. Please try again later.");
+            // setError("Failed to fetch search results. Please try again later.");
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
     };
 

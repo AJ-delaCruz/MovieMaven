@@ -1,6 +1,6 @@
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { backendUrl } from "../utils/config";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { MovieType } from "../types/movie";
 import { useSnackbarContext } from "./SnackBarAlertContext";
 
@@ -42,7 +42,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
     const addToWatchlist = async (movie: MovieType) => {
 
         try {
-            const response = await axios.post(`${backendUrl}/api/user/watchlist/add`, null, {
+            await axios.post(`${backendUrl}/api/user/watchlist/add`, null, {
                 params: {
                     tmdbId: movie.id
                 },
@@ -71,7 +71,7 @@ export const WatchlistProvider: React.FC<WatchlistProviderProps> = ({ children }
 
     const removeFromWatchlist = async (movieId: number) => {
         try {
-            const response = await axios.delete(`${backendUrl}/api/user/watchlist/remove/${movieId}`, {
+            await axios.delete(`${backendUrl}/api/user/watchlist/remove/${movieId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }

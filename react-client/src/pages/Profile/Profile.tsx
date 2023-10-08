@@ -39,10 +39,11 @@ const Profile = () => {
     useEffect(() => {
 
         getUser();
-    
+
         fetchWatchlist(); // Fetch movies using the context api
         fetchFavorites();
         fetchRatings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 

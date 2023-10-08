@@ -22,7 +22,7 @@ const Register: React.FC = () => {
 
         try {
             //registers user
-            const res = await axios.post(`${backendUrl}/api/auth/register`, {
+            await axios.post(`${backendUrl}/api/auth/register`, {
                 username: username,
                 password: password
             });

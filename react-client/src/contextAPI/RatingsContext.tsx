@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { backendUrl } from "../utils/config";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { MovieType } from "../types/movie";
 import { RatingType } from "../types/rating";
 import { useSnackbarContext } from "./SnackBarAlertContext";
