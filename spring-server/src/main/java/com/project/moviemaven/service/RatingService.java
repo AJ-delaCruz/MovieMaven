@@ -1,6 +1,7 @@
 package com.project.moviemaven.service;
 
 import java.util.List;
+// import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -41,7 +42,8 @@ public class RatingService {
         Movie movie = movieService.getOrAddMovieToDb(tmdbId);
 
         // check if it's already rated
-        Rating rating = ratingRepository.findByUserIdAndMovieId(user.getId(), movie.getId()) // local movie id
+        Rating rating = ratingRepository.findByUserIdAndMovieId(user.getId(),
+                movie.getId()) // local movie id
                 .orElse(new Rating());
 
         rating.setUser(user);
@@ -70,10 +72,10 @@ public class RatingService {
     @Transactional(readOnly = true)
     @Cacheable(value = "userRatings", key = "#username")
     public List<MovieDTO> getRatingsWithMoviesByUser(String username) {
-        User user = userService.getUserByUsername(username);
 
-        // Fetch ratings by user
-        List<Rating> ratings = ratingRepository.findByUserId(user.getId());
+        // Fetch ratings by user along with the associated movie using username
+        List<Rating> ratings = ratingRepository.findRatedMoviesByUsername(username)
+                .orElseThrow(() -> new NotFoundException("No rated movies found by user"));
 
         // Convert to Movie DTO with user rating
         return ratings.stream()
@@ -165,3 +167,34 @@ public class RatingService {
     }
 
 }
+
+// //todo
+// @Transactional
+// @CacheEvict(value = "userRatings", key = "#username")
+// public void addOrUpdateRating(String username, Long tmdbId, Float
+// ratingValue) {
+// if (ratingValue < 1 || ratingValue > 10) {
+// throw new IllegalArgumentException("Rating value must be between 1 and 10");
+// }
+
+// //optimized database call
+// Optional<Rating> currentRating =
+// ratingRepository.findRatingByUsernameAndTmdbId(username, tmdbId);
+
+// // update movie rating by user using optimized database call
+// if (currentRating.isPresent()) {
+// Rating existingRating = currentRating.get();
+// existingRating.setRatingValue(ratingValue);
+// ratingRepository.save(existingRating);
+// } // add new rating for movie
+// else {
+// User user = userService.getUserByUsername(username);
+// Movie movie = movieService.getOrAddMovieToDb(tmdbId);
+
+// Rating newRating = new Rating();
+// newRating.setUser(user);
+// newRating.setMovie(movie);
+// newRating.setRatingValue(ratingValue);
+// ratingRepository.save(newRating);
+// }
+// }

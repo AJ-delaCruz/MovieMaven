@@ -132,8 +132,7 @@ public class RatingServiceUnitTest {
 
         List<Rating> ratings = Arrays.asList(rating, rating2);
         // mock
-        when(userService.getUserByUsername("username")).thenReturn(user);
-        when(ratingRepository.findByUserId(1L)).thenReturn(ratings);
+        when(ratingRepository.findRatedMoviesByUsername("username")).thenReturn(Optional.of(ratings));
 
         List<MovieDTO> movieDTOs = ratingService.getRatingsWithMoviesByUser("username");
 
