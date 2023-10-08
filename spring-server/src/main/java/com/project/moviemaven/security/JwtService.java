@@ -37,7 +37,7 @@ public class JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    // fenerate token with additional claims and user details
+    // generate token with additional claims and user details
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts
                 .builder()
@@ -45,7 +45,7 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis())) // check if token still valid
                 // .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24)) // 24 hours 1000ms
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 days ms
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact(); // generate and return token
     }
