@@ -8,6 +8,8 @@ pipeline {
         POSTGRES_USERNAME = "${POSTGRES_USERNAME}"
         POSTGRES_PASSWORD = "${POSTGRES_PASSWORD}"
         POSTGRES_DB = "${POSTGRES_DB}"
+        REDIS_HOST = "${REDIS_HOST}"
+        REDIS_PORT = "${REDIS_PORT}"
 
         //env variable for tests
         POSTGRES_URL_TEST = "${POSTGRES_URL_TEST}"

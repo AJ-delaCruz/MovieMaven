@@ -7,8 +7,8 @@ services:
       context: ./spring-server
       dockerfile: Dockerfile
     image: aj09/movie-server
-    env_file:
-      - ./spring-server/src/main/resources/.env 
+    # env_file:
+    #   - ./spring-server/src/main/resources/.env 
     ports:
       - 3000:3000
     environment: # overrides variables .env in ./
