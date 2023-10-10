@@ -8,6 +8,12 @@ pipeline {
         POSTGRES_USERNAME = "${POSTGRES_USERNAME}"
         POSTGRES_PASSWORD = "${POSTGRES_PASSWORD}"
         POSTGRES_DB = "${POSTGRES_DB}"
+
+        //env variable for tests
+        POSTGRES_URL_TEST = "${POSTGRES_URL_TEST}"
+        POSTGRES_USERNAME_TEST = "${POSTGRES_USERNAME_TEST}"
+        POSTGRES_PASSWORD_TEST = "${POSTGRES_PASSWORD_TEST}"
+        POSTGRES_DB_TEST = "${POSTGRES_DB_TEST}"
     }
 
     stages {
