@@ -23,7 +23,7 @@ pipeline {
             steps {
                 script {
                     echo 'Testing...'
-                    sh 'docker-compose -f docker-compose.yml up --exit-code-from backend'
+                    sh 'docker-compose -f docker-compose.test.yml up --exit-code-from backend'
                 }
             }
         }
@@ -43,7 +43,7 @@ pipeline {
                                                         usernameVariable: 'DOCKER_USER', 
                                                         passwordVariable: 'DOCKER_PW')]) {
                         sh 'echo $DOCKER_PW | docker login --username $DOCKER_USER --password-stdin'
-                        sh 'docker push aj09/movie-client'
+                        // sh 'docker push aj09/movie-client' //using netlify
                         sh 'docker push aj09/movie-server'
                     }
                 }

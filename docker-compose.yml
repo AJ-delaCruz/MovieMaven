@@ -12,6 +12,10 @@ services:
       - 3000:3000
     depends_on:
       - database
+      - redisContainer
+    environment:
+      REDIS_HOST: redisContainer
+      REDIS_PORT: 6379
 
   frontend:
     build: 
@@ -30,3 +34,8 @@ services:
       - ./spring-server/src/main/resources/.env
     volumes:
       - ./data:/var/lib/postgresql/data
+
+  redisContainer:
+    image: redis
+    ports:
+      - "6379:6379"

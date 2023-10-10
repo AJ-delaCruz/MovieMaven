@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   backend:
     build: #builds the docker image locally
       context: ./spring-server
@@ -17,6 +16,10 @@ services:
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
+      REDIS_HOST: redisTest #container
+      REDIS_PORT: 6379
+  
+      
 
   database:
     image: postgres
@@ -25,6 +28,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - ./data:/var/lib/postgresql/data
+
+  redisTest:
+    image: redis
+    ports:
+      - "6379:6379"
 
