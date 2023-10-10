@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() { // https://docs.spring.io/spring-security/reference/reactive/integrations/cors.html
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4000", "http://localhost", allowedCorsOrigin));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4000", "http://localhost", "https://moviemaven-hub.netlify.app", allowedCorsOrigin));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowCredentials(true);
