@@ -63,6 +63,18 @@ public class WatchListService {
                 .collect(Collectors.toList());
     }
 
+    // test
+    @Transactional
+    public List<MovieDTO> getWatchListTest(String username) {
+        // 2 db query (watchlist is lazy fetch)
+        User user = userService.getUserByUsername(username);
+        // movies from watch list
+        Set<Movie> watchlistMovies = user.getWatchList();
+        return watchlistMovies.stream()
+                .map(MovieMapper::toMovieDTO)
+                .collect(Collectors.toList());
+    }
+
     // remove movie from user's watch list
     @Transactional
     @CacheEvict(value = "watchlist", key = "#username")

@@ -42,6 +42,13 @@ public class WatchListController {
         return ResponseEntity.ok(movies);
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<List<MovieDTO>> getWatchlistTest(Principal principal) {
+        String username = principal.getName();
+        List<MovieDTO> movies = watchListService.getWatchListTest(username);
+        return ResponseEntity.ok(movies);
+    }
+
     // remove movie from user's watchlist
     @DeleteMapping("/remove/{tmdbId}")
     public ResponseEntity<String> removeFromWatchList(Principal principal, @PathVariable Long tmdbId) {
