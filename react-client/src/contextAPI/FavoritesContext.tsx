@@ -40,26 +40,35 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     const showSnackbar = useSnackbarContext();
 
     const addFavorite = async (movie: MovieType) => {
+        // optimistic update the UI 
+        setFavorites(prevFavorites => [...prevFavorites, movie]);
+        setFavoritesMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
+
         try {
             await axios.post(`${backendUrl}/api/favorite/add/${movie.id}`, null, {//not using req.body
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token")}`,
                 }
             });
-
             // console.log(response); //check if movie is added
-            setFavorites(prevFavorites => [...prevFavorites, movie]);
-            setFavoritesMovieIds(prevState => ({ ...prevState, [movie.id]: true }));
+
             // Show success snackbar
             showSnackbar(movie.title + " added to favorites successfully!", "success");
         } catch (error) {
-            // const err = error as AxiosError;
-            // console.log(err.response?.data);
+
+            // Revert the UI optimistic update if it fails
+            setFavoritesMovieIds(revertedFavorites => {
+                const updatedFavorites = { ...revertedFavorites };
+                delete updatedFavorites[movie.id]; //delete key movie.id property from favorites object
+                return updatedFavorites; //callback
+            });
+
             console.error("Failed to add movie to favorites: " + movie.id, error);
             // Show error snackbar
-            showSnackbar("Failed to add movie to favorites. Please try again!", "error");
+            showSnackbar("Failed to add movie to favorites. Please try again later!", "error");
         }
     };
+
 
     const removeFavorite = async (movieId: number) => {
         try {
