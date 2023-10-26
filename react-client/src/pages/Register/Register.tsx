@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import { backendUrl } from "../../utils/config";
 import { ERROR_MESSAGES } from "../../utils/errorMessage";
+import { CircularProgress } from '@mui/material';
 import axios, { AxiosError } from "axios";
 
 const Register: React.FC = () => {
@@ -53,6 +54,8 @@ const Register: React.FC = () => {
 
     return (
         <div className='grid-box-register'>
+            <div className='background-box-register'>
+            </div>
 
             <div className='form-register'>
                 <div className='auth-header'>
@@ -88,7 +91,10 @@ const Register: React.FC = () => {
                         Sign Up
                     </Button>
 
+                    {isLoading && <CircularProgress />}
+
                     {errorMessage && <p>{errorMessage}</p>}
+
                 </form>
 
                 <div className='button-container'>

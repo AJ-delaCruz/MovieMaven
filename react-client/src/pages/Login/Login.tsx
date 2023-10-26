@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField';
 import { CircularProgress } from '@mui/material';
 import { useAuthContext } from "../../contextAPI/AuthContext";
 import { ERROR_MESSAGES } from "../../utils/errorMessage";
+import './background.scss';
 
 // type AxiosError = {  // custom
 //     response?: {
@@ -27,9 +28,8 @@ const Login: React.FC = () => {
 
     // const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     const submitLogin = async (e: React.FormEvent) => {
-        setIsLoading(true);
-
         e.preventDefault();
+        setIsLoading(true);
 
         try {
             const res = await axios.post(`${backendUrl}/api/auth/login`, {
@@ -70,6 +70,9 @@ const Login: React.FC = () => {
 
     return (
         <div className='grid-box'>
+            <div className='background-box'>
+            </div>
+
             <div className='form'>
                 <div className='auth-header'>
                     <h3>Login here</h3>
