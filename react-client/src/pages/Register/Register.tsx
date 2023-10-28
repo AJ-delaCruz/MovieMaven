@@ -33,16 +33,14 @@ const Register: React.FC = () => {
             // Navigate to login page after successful register
             navigate('/login');
         } catch (err) {
-            console.log(err);
-            //set the error message
-            // setErrorMessage(err.response.data.message);
-
+            // console.log(err);
             const error = err as AxiosError;
 
-            if (error.response && typeof error.response.data === 'string') {
+            if (error.code === 'ERR_BAD_RESPONSE' && error.message.includes('500')) {
+                setErrorMessage(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+            } else if (error.response && typeof error.response.data === 'string') {
                 setErrorMessage(error.response.data);
-            }
-            else {
+            } else {
                 setErrorMessage(ERROR_MESSAGES.UNEXPECTED);
             }
         } finally {
@@ -86,16 +84,13 @@ const Register: React.FC = () => {
                         }}
                     />
 
-
                     <Button type='submit' variant='contained' disabled={isLoading}>
                         Sign Up
                     </Button>
-
-                    {isLoading && <CircularProgress />}
-
-                    {errorMessage && <p>{errorMessage}</p>}
-
                 </form>
+
+                {isLoading && <CircularProgress />}
+                {errorMessage && <p>{errorMessage}</p>}
 
                 <div className='button-container'>
                     <span>Already have an account?</span>

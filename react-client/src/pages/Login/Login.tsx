@@ -45,10 +45,11 @@ const Login: React.FC = () => {
             navigate('/');
         } catch (err) {
             // console.log(err);
-            // setErrorMessage(err.response.data.message);
             const error = err as AxiosError;
 
-            if (error.response && typeof error.response.data === 'string') {
+            if (error.code === 'ERR_BAD_RESPONSE' && error.message.includes('500')) {
+                setErrorMessage(ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+            } else if (error.response && typeof error.response.data === 'string') {
                 setErrorMessage(error.response.data);
             } else {
                 setErrorMessage(ERROR_MESSAGES.UNEXPECTED);
